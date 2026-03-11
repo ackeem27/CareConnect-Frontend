@@ -1,0 +1,264 @@
+/* ============================================
+   StaffPortal.css — Matches the MediPortal UI
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.sp-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    color: #1F2937;
+}
+
+/* ─── Header ─────────────────────────────── */
+.sp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    border-bottom: 1px solid #E5E7EB;
+    background: #ffffff;
+}
+
+.sp-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.sp-logo-icon {
+    width: 36px;
+    height: 36px;
+    background-color: #3B82F6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sp-logo-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1F2937;
+    letter-spacing: -0.3px;
+}
+
+.sp-back-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #6B7280;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: color 0.2s;
+}
+
+.sp-back-link:hover {
+    color: #3B82F6;
+}
+
+/* ─── Main Content ────────────────────────── */
+.sp-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 48px 80px;
+}
+
+.sp-title-area {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.sp-title-area h1 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 12px;
+    letter-spacing: -1px;
+}
+
+.sp-title-area p {
+    font-size: 15px;
+    color: #6B7280;
+}
+
+/* ─── Cards Container ─────────────────────── */
+.sp-cards-container {
+    width: 100%;
+    max-width: 1000px;
+    border: 1px solid #E5E7EB;
+    border-radius: 16px;
+    padding: 48px 40px;
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    background: #ffffff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    margin-bottom: 40px;
+}
+
+/* ─── Individual Card ─────────────────────── */
+.sp-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    gap: 12px;
+}
+
+.sp-card-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.sp-card-icon.blue  { background-color: #EBF5FF; }
+.sp-card-icon.green { background-color: #DCFCE7; }
+.sp-card-icon.purple { background-color: #F3E8FF; }
+.sp-card-icon.orange { background-color: #FEF3C7; }
+
+.sp-card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.sp-card p {
+    font-size: 13px;
+    color: #6B7280;
+    line-height: 1.55;
+    min-height: 48px;
+}
+
+.sp-card-btn {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    background-color: #3B82F6;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    margin-top: 8px;
+}
+
+.sp-card-btn:hover {
+    background-color: #2563EB;
+    transform: translateY(-1px);
+}
+
+.sp-card-btn:active {
+    transform: scale(0.98);
+}
+
+/* ─── Security Notice ─────────────────────── */
+.sp-security-notice {
+    width: 100%;
+    max-width: 1000px;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: #ffffff;
+}
+
+.sp-notice-icon {
+    flex-shrink: 0;
+    color: #3B82F6;
+    margin-top: 2px;
+}
+
+.sp-notice-content h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 6px;
+}
+
+.sp-notice-content p {
+    font-size: 13.5px;
+    color: #6B7280;
+    line-height: 1.6;
+}
+
+.sp-notice-content strong {
+    color: #111827;
+    font-weight: 700;
+}
+
+/* ─── Footer ──────────────────────────────── */
+.sp-footer {
+    border-top: 1px solid #E5E7EB;
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+}
+
+.sp-footer-copy {
+    font-size: 13px;
+    color: #9CA3AF;
+}
+
+.sp-footer-links {
+    display: flex;
+    gap: 28px;
+}
+
+.sp-footer-links span {
+    font-size: 13px;
+    color: #6B7280;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.sp-footer-links span:hover {
+    color: #3B82F6;
+}
+
+/* ─── Responsive ──────────────────────────── */
+@media (max-width: 768px) {
+    .sp-cards-container {
+        flex-direction: column;
+        padding: 32px 24px;
+    }
+    .sp-header {
+        padding: 16px 24px;
+    }
+    .sp-main {
+        padding: 40px 24px;
+    }
+    .sp-title-area h1 {
+        font-size: 2rem;
+    }
+    .sp-footer {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+}

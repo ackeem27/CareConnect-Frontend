@@ -1,0 +1,260 @@
+/* ================================================
+   CreatePortal.css — Matches the MediPortal style
+   Same design system as StaffPortal.css
+   ================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.cp-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    color: #1F2937;
+}
+
+/* ─── Header ─────────────────────────────── */
+.cp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    border-bottom: 1px solid #E5E7EB;
+    background: #ffffff;
+}
+
+.cp-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.cp-logo-icon {
+    width: 36px;
+    height: 36px;
+    background-color: #3B82F6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cp-logo-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1F2937;
+    letter-spacing: -0.3px;
+}
+
+.cp-back-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #6B7280;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: color 0.2s;
+}
+
+.cp-back-link:hover {
+    color: #3B82F6;
+}
+
+/* ─── Main Content ────────────────────────── */
+.cp-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 48px 80px;
+}
+
+.cp-title-area {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.cp-title-area h1 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 12px;
+    letter-spacing: -1px;
+}
+
+.cp-title-area p {
+    font-size: 15px;
+    color: #6B7280;
+}
+
+/* ─── Cards Container ─────────────────────── */
+.cp-cards-container {
+    width: 100%;
+    max-width: 1000px;
+    border: 1px solid #E5E7EB;
+    border-radius: 16px;
+    padding: 48px 40px;
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    background: #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    margin-bottom: 40px;
+}
+
+/* ─── Individual Card ─────────────────────── */
+.cp-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    gap: 12px;
+}
+
+.cp-card-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.cp-card-icon.blue   { background-color: #EBF5FF; }
+.cp-card-icon.green  { background-color: #DCFCE7; }
+.cp-card-icon.purple { background-color: #F3E8FF; }
+.cp-card-icon.amber  { background-color: #FEF3C7; }
+
+.cp-card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.cp-card p {
+    font-size: 13px;
+    color: #6B7280;
+    line-height: 1.55;
+    min-height: 48px;
+}
+
+.cp-card-btn {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    background-color: #3B82F6;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    margin-top: 8px;
+}
+
+.cp-card-btn:hover {
+    background-color: #2563EB;
+    transform: translateY(-1px);
+}
+
+.cp-card-btn:active {
+    transform: scale(0.98);
+}
+
+/* ─── Info Notice ─────────────────────────── */
+.cp-info-notice {
+    width: 100%;
+    max-width: 1000px;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: #ffffff;
+}
+
+.cp-notice-icon {
+    flex-shrink: 0;
+    color: #3B82F6;
+    margin-top: 2px;
+}
+
+.cp-notice-content h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 6px;
+}
+
+.cp-notice-content p {
+    font-size: 13.5px;
+    color: #6B7280;
+    line-height: 1.6;
+}
+
+/* ─── Footer ──────────────────────────────── */
+.cp-footer {
+    border-top: 1px solid #E5E7EB;
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+}
+
+.cp-footer-copy {
+    font-size: 13px;
+    color: #9CA3AF;
+}
+
+.cp-footer-links {
+    display: flex;
+    gap: 28px;
+}
+
+.cp-footer-links span {
+    font-size: 13px;
+    color: #6B7280;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.cp-footer-links span:hover {
+    color: #3B82F6;
+}
+
+/* ─── Responsive ──────────────────────────── */
+@media (max-width: 768px) {
+    .cp-cards-container {
+        flex-direction: column;
+        padding: 32px 24px;
+    }
+    .cp-header {
+        padding: 16px 24px;
+    }
+    .cp-main {
+        padding: 40px 24px;
+    }
+    .cp-title-area h1 {
+        font-size: 2rem;
+    }
+    .cp-footer {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+}
