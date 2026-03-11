@@ -1,0 +1,165 @@
+/* Resized and cleaned up Pachalo styles for the unified project */
+
+.box1{
+    background-color: white;
+    position: relative;
+    padding: 10px 32px;
+    height: 64px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon {
+    background-color: #3B82F6;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #3B82F6;
+    font-family: 'Inter', sans-serif;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.nav-button{
+    padding: 8px 16px;
+    color:#4B5563;
+    background-color: transparent;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-button:hover{
+    background-color: #f3f4f6;
+}
+
+.nav-button.primary {
+    background-color: #3B82F6;
+    color: white;
+}
+
+.nav-button.primary:hover {
+    background-color: #2563eb;
+}
+
+/* Auth Cards */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 64px);
+    background-color: #f9fafb;
+    padding: 40px 20px;
+}
+
+.auth-card {
+    background: white;
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    max-width: 900px;
+    width: 100%;
+}
+
+.auth-sidebar {
+    background-color: #E6F0FF;
+    padding: 40px;
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-form-area {
+    padding: 40px;
+    flex: 1;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4B5563;
+    margin-bottom: 6px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    border-color: #3B82F6;
+}
+
+.btn-auth {
+    width: 100%;
+    padding: 12px;
+    background-color: #3B82F6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-auth:hover {
+    background-color: #2563eb;
+}
+
+.auth-footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.auth-link {
+    color: #3B82F6;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+}
