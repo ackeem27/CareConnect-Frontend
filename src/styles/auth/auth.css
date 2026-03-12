@@ -163,3 +163,4 @@
 .animate-fade-up {
     animation: fadeInUp 0.5s ease-out forwards;
 }
+/* Error state: red border with fade animation */
