@@ -113,3 +113,4 @@ const UnifiedLogin = () => {
 };
 
 export default UnifiedLogin;
+// Caps lock warning indicator
