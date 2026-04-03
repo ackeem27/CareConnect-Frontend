@@ -154,3 +154,4 @@ const EmailVerification = ({ email, role, onVerified }) => {
 
 export default EmailVerification;
 // Network timeout handler
+// Validate email before OTP request
