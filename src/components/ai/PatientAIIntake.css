@@ -1,0 +1,537 @@
+/* Patient Portal - Full Page Styles */
+
+.patient-portal {
+  min-height: 100vh;
+  background: #f8fafc;
+  color: #1e293b;
+  font-family: inherit;
+  overflow-y: auto;
+}
+
+/* Emergency Bar */
+.portal-emergency-bar {
+  background: #ef4444;
+  color: white;
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* ── Hero Section ── */
+.portal-hero {
+  background: white;
+  padding: 48px 64px;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.portal-hero-text {
+  flex: 1;
+}
+
+.portal-hero-heading {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 16px 0 16px;
+  color: #0f172a;
+}
+
+.portal-hero-accent {
+  color: #3b82f6;
+}
+
+.portal-hero-sub {
+  font-size: 16px;
+  color: #64748b;
+  line-height: 1.6;
+  max-width: 480px;
+  margin-bottom: 28px;
+}
+
+.portal-hero-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.portal-hero-images-container {
+  flex: 0 0 450px;
+  position: relative;
+  height: 380px;
+  margin-top: -20px;
+}
+
+.hero-img-main {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.hero-img-float {
+  width: 180px;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 6px solid white;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+  position: absolute;
+  bottom: 0;
+  left: -40px;
+  z-index: 2;
+}
+
+.overlay-card {
+  position: absolute;
+  bottom: 20px;
+  right: -20px;
+  background: white;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+  border: 1px solid #e2e8f0;
+  z-index: 3;
+}
+
+.live-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  margin-top: 4px;
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.portal-hero-card-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #334155;
+}
+
+.portal-hero-card-sub {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ── Buttons ── */
+.btn-portal-primary {
+  background: #3b82f6;
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-portal-primary:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.btn-portal-outline {
+  background: white;
+  color: #3b82f6;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 2px solid #3b82f6;
+  transition: all 0.2s ease;
+}
+
+.btn-portal-outline:hover {
+  background: #eff6ff;
+}
+
+/* ── Sections ── */
+.portal-section {
+  padding: 48px 64px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.portal-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.portal-section-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.portal-section-sub {
+  font-size: 15px;
+  color: #64748b;
+  max-width: 560px;
+}
+
+/* ── Symptom Category Cards ── */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.category-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.category-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.12);
+  transform: translateY(-2px);
+}
+
+.category-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.category-icon {
+  font-size: 24px;
+}
+
+.category-urgency-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.urgency-high { background: #fee2e2; color: #dc2626; }
+.urgency-medium { background: #fef3c7; color: #d97706; }
+.urgency-low { background: #d1fae5; color: #059669; }
+
+.category-title { font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
+.category-desc { font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 12px; }
+.category-cta { font-size: 13px; font-weight: 600; color: #3b82f6; display: flex; align-items: center; gap: 4px; }
+
+/* ── Intake Modal & Overlay ── */
+.intake-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+/* ── Modal Symptom Assessment Styles ── */
+.intake-assessment-modal {
+  background: white;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 48px;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: #f1f5f9;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s;
+}
+
+.assessment-top-modal {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.badge-modal {
+  display: inline-block;
+  padding: 4px 16px;
+  background-color: #e7f5ff;
+  color: #1971c2;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.assessment-title-modal {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: #0f172a;
+}
+
+.assessment-subtitle-modal {
+  font-size: 15px;
+  color: #64748b;
+}
+
+.assessment-stepper-modal {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto 40px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.step-item-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.step-number-modal {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #f1f3f5;
+  color: #adb5bd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.step-item-modal.active .step-number-modal {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.step-label-modal {
+  font-size: 11px;
+  font-weight: 600;
+  color: #adb5bd;
+}
+
+.step-item-modal.active .step-label-modal {
+  color: #3b82f6;
+}
+
+.step-line-modal {
+  flex: 1;
+  height: 1px;
+  background-color: #e9ecef;
+  margin-top: -20px;
+}
+
+.assessment-card-modal {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+}
+
+.card-header-modal {
+  padding: 32px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.card-icon-box-modal {
+  width: 48px;
+  height: 48px;
+  background: #f0f7ff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-header-modal h2 { font-size: 20px; font-weight: 700; margin: 0; color: #111827; }
+.card-header-modal p { font-size: 14px; color: #6b7280; margin: 4px 0 0; }
+
+.card-body-modal { padding: 32px; }
+
+.symptom-section-modal { margin-bottom: 32px; }
+.section-title-modal { font-size: 15px; font-weight: 700; color: #374151; margin-bottom: 16px; }
+
+.symptom-pills-modal { display: flex; flex-wrap: wrap; gap: 12px; }
+.symptom-pill-modal {
+  padding: 8px 20px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.symptom-pill-modal:hover { border-color: #3b82f6; }
+.symptom-pill-modal.active { background: #3b82f6; border-color: #3b82f6; color: white; }
+
+.assessment-input-modal {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+}
+
+.privacy-notice-modal {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-top: 32px;
+}
+
+.privacy-notice-modal strong { display: block; font-size: 14px; color: #374151; margin-bottom: 4px; }
+.privacy-notice-modal p { font-size: 14px; color: #6b7280; margin: 0; line-height: 1.5; }
+
+.severity-selector-modal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.severity-btn-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.severity-btn-modal.active { border-color: #3b82f6; background: #f0f7ff; }
+.severity-icon-modal { font-size: 32px; }
+.severity-btn-modal span { font-size: 14px; font-weight: 700; color: #111827; }
+
+.card-footer-modal {
+  padding: 24px 32px;
+  background: white;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-primary-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: #8cc5ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 160px;
+}
+
+.btn-primary-modal:hover:not(:disabled) { background: #7ab3f0; }
+
+.btn-secondary-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 140px;
+}
+
+.btn-secondary-modal:hover { background: #f9fafb; }
+
+.review-item-modal { margin-bottom: 16px; }
+.review-label-modal { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; }
+.review-value-modal { font-size: 14px; font-weight: 600; color: #1e293b; margin-top: 4px; }
+.error-message-modal { color: #ef4444; font-size: 13px; margin-top: 12px; }
+
+.portal-emergency-bar-inline {
+  background: #fee2e2;
+  color: #dc2626;
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* Footer */
+.portal-footer {
+  padding: 24px 64px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #94a3b8;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
