@@ -320,3 +320,4 @@ const CalendarIcon = () => (
 );
 
 export default PatientDashboard;
+// Force badge re-render on notification update
