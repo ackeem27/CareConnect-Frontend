@@ -324,3 +324,4 @@ export default PatientDashboard;
 // Empty state: show 'No appointments' message
 // Cancellation requires confirmation dialog
 // Fetch previous appointments
+// Format: '2 hours ago'
