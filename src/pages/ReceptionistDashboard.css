@@ -366,3 +366,4 @@
   .form-grid-premium { grid-template-columns: 1fr; gap: 24px; }
   .severity-grid-premium { grid-template-columns: 1fr; }
 }
+/* Priority colors: red=high, yellow=medium, green=low */
