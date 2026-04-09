@@ -502,3 +502,4 @@ export default function ReceptionistDashboard() {
     </div>
   );
 }
+// Show warning modal on scheduling conflict
