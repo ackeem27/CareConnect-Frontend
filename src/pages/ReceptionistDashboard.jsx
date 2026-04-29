@@ -517,3 +517,4 @@ export default function ReceptionistDashboard() {
 // Test: Walk-in registration flow
 // Fetch latest schedule before approve
 // Optimize SVGs for performance
+// Timezone handling for slots
