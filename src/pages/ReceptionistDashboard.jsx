@@ -509,3 +509,4 @@ export default function ReceptionistDashboard() {
 // Debounce approval actions to prevent double-submit
 // Refresh schedule data on date change
 // Toggle weekend visibility in schedule view
+// Walk-in form required fields
