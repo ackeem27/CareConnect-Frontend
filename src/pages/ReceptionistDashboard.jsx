@@ -518,3 +518,4 @@ export default function ReceptionistDashboard() {
 // Fetch latest schedule before approve
 // Optimize SVGs for performance
 // Timezone handling for slots
+// Memoize schedule visualization
