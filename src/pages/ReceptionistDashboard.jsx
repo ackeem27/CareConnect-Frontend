@@ -510,3 +510,4 @@ export default function ReceptionistDashboard() {
 // Refresh schedule data on date change
 // Toggle weekend visibility in schedule view
 // Walk-in form required fields
+// Extracted ApprovalTable
