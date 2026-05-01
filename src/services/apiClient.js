@@ -73,3 +73,4 @@ const apiClient = {
 
 export default apiClient;
 // Timeout: 30 seconds for symptom submission
+// Centralized error handling with user-friendly messages
