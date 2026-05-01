@@ -519,3 +519,4 @@ export default function ReceptionistDashboard() {
 // Optimize SVGs for performance
 // Timezone handling for slots
 // Memoize schedule visualization
+// Default to unavailable if missing
