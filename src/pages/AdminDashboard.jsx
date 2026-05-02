@@ -259,3 +259,4 @@ export default AdminDashboard;
 // Loading state for save operations
 // AdminDashboard: Manages users, configs, and activity logs
 // Use memo for UserList component
+// Debounce search to 300ms
