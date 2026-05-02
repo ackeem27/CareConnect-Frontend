@@ -511,3 +511,4 @@ export default function ReceptionistDashboard() {
 // Toggle weekend visibility in schedule view
 // Walk-in form required fields
 // Extracted ApprovalTable
+// Retain override reason on close
