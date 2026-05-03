@@ -347,3 +347,4 @@ const AIAccuracyDashboard = () => {
 };
 
 export default AIAccuracyDashboard;
+// Chart re-render on data update
