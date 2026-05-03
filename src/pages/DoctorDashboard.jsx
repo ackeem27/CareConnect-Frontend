@@ -478,3 +478,4 @@ export default DoctorDashboard;
 // Sort records by date descending
 // Case-insensitive patient name search
 // Optimized calendar rendering
+// Reset modal state on close
