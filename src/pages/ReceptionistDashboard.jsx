@@ -520,3 +520,4 @@ export default function ReceptionistDashboard() {
 // Timezone handling for slots
 // Memoize schedule visualization
 // Default to unavailable if missing
+// Correct week start/end dates
