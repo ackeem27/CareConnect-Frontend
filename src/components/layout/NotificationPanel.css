@@ -1,0 +1,22 @@
+.np-container { position: relative; }
+.np-bell-btn { background: none; border: none; color: #64748b; cursor: pointer; padding: 6px; position: relative; }
+.np-bell-btn:hover { color: #334155; }
+.np-badge { position: absolute; top: 0; right: 0; background: #ef4444; color: white; font-size: 10px; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+.np-panel { position: absolute; top: 42px; right: 0; width: 380px; background: white; border: 1px solid #e2e8f0; border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,0.12); z-index: 1000; overflow: hidden; }
+.np-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #e2e8f0; }
+.np-header h3 { font-size: 16px; font-weight: 700; color: #0f172a; margin: 0; }
+.np-header-actions { display: flex; gap: 8px; }
+.np-mark-all { display: flex; align-items: center; gap: 4px; background: none; border: none; color: #3b82f6; font-size: 12px; font-weight: 600; cursor: pointer; }
+.np-clear { background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px; }
+.np-list { max-height: 400px; overflow-y: auto; }
+.np-empty { text-align: center; padding: 40px 20px; color: #94a3b8; }
+.np-empty p { margin: 8px 0 0; font-size: 13px; }
+.np-item { display: flex; gap: 12px; padding: 14px 20px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.15s; align-items: flex-start; }
+.np-item:hover { background: #f8fafc; }
+.np-item.unread { background: #fafbff; }
+.np-item-icon { width: 36px; height: 36px; background: #f1f5f9; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.np-item-content { flex: 1; min-width: 0; }
+.np-item-content h4 { font-size: 13px; font-weight: 600; color: #1e293b; margin: 0 0 2px; }
+.np-item-content p { font-size: 12px; color: #64748b; margin: 0; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.np-item-time { font-size: 11px; color: #94a3b8; margin-top: 4px; display: block; }
+.np-unread-dot { width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
