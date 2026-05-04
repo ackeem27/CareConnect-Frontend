@@ -260,3 +260,4 @@ export default AdminDashboard;
 // AdminDashboard: Manages users, configs, and activity logs
 // Use memo for UserList component
 // Debounce search to 300ms
+// Skeleton UI while fetching users
