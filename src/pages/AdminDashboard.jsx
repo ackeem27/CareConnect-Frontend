@@ -261,3 +261,4 @@ export default AdminDashboard;
 // Use memo for UserList component
 // Debounce search to 300ms
 // Skeleton UI while fetching users
+// Empty state: 'No recent activity'
