@@ -512,3 +512,4 @@ export default function ReceptionistDashboard() {
 // Walk-in form required fields
 // Extracted ApprovalTable
 // Retain override reason on close
+// Search result pagination fix
