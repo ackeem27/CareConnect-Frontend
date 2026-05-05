@@ -507,3 +507,4 @@ export default function ReceptionistDashboard() {
 // Format: HH:MM AM/PM
 // Min date: today, no past dates allowed
 // Debounce approval actions to prevent double-submit
+// Refresh schedule data on date change
