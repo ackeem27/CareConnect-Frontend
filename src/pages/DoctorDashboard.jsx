@@ -479,3 +479,4 @@ export default DoctorDashboard;
 // Case-insensitive patient name search
 // Optimized calendar rendering
 // Reset modal state on close
+// Validation error styles
