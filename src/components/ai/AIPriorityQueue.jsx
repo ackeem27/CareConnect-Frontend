@@ -332,3 +332,4 @@ const AIPriorityQueue = () => {
 };
 
 export default AIPriorityQueue;
+// Cleanup interval on component unmount
