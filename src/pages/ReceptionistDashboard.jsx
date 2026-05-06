@@ -513,3 +513,4 @@ export default function ReceptionistDashboard() {
 // Extracted ApprovalTable
 // Retain override reason on close
 // Search result pagination fix
+// Filter schedule by doctor
