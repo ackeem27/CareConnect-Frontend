@@ -480,3 +480,4 @@ export default DoctorDashboard;
 // Optimized calendar rendering
 // Reset modal state on close
 // Validation error styles
+// Daily patient stat counters
