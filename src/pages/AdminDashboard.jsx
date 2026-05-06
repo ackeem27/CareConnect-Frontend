@@ -262,3 +262,4 @@ export default AdminDashboard;
 // Debounce search to 300ms
 // Skeleton UI while fetching users
 // Empty state: 'No recent activity'
+// Pre-save config validation
