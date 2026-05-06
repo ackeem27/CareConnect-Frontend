@@ -521,3 +521,4 @@ export default function ReceptionistDashboard() {
 // Memoize schedule visualization
 // Default to unavailable if missing
 // Correct week start/end dates
+// Filter out booked slots
