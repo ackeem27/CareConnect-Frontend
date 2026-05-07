@@ -522,3 +522,4 @@ export default function ReceptionistDashboard() {
 // Default to unavailable if missing
 // Correct week start/end dates
 // Filter out booked slots
+// Test: Day/Week/Month views
