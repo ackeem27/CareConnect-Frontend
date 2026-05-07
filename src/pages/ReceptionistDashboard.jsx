@@ -505,3 +505,4 @@ export default function ReceptionistDashboard() {
 // Show warning modal on scheduling conflict
 // Empty queue: show 'No patients waiting' state
 // Format: HH:MM AM/PM
+// Min date: today, no past dates allowed
