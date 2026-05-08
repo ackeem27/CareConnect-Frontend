@@ -325,3 +325,4 @@ export default PatientDashboard;
 // Cancellation requires confirmation dialog
 // Fetch previous appointments
 // Format: '2 hours ago'
+// Cypress e2e tests added
