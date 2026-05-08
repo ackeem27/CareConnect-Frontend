@@ -659,3 +659,4 @@ body {
   .stats-container { flex-direction: column; }
   .footer-content { grid-template-columns: 1fr; }
 }
+/* Mobile hero: stack vertically below 768px */
