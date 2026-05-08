@@ -514,3 +514,4 @@ export default function ReceptionistDashboard() {
 // Retain override reason on close
 // Search result pagination fix
 // Filter schedule by doctor
+// Test: Walk-in registration flow
