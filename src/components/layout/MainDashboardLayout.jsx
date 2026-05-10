@@ -114,3 +114,4 @@ const MainDashboardLayout = ({ children, role: propRole }) => {
 };
 
 export default MainDashboardLayout;
+// Persist sidebar state in localStorage
