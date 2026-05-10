@@ -257,3 +257,4 @@ const AdminDashboard = () => {
 export default AdminDashboard;
 // Confirmation dialog before deletion
 // Loading state for save operations
+// AdminDashboard: Manages users, configs, and activity logs
