@@ -508,3 +508,4 @@ export default function ReceptionistDashboard() {
 // Min date: today, no past dates allowed
 // Debounce approval actions to prevent double-submit
 // Refresh schedule data on date change
+// Toggle weekend visibility in schedule view
