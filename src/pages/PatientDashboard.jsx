@@ -326,3 +326,4 @@ export default PatientDashboard;
 // Fetch previous appointments
 // Format: '2 hours ago'
 // Cypress e2e tests added
+// Truncate long names with ellipsis
