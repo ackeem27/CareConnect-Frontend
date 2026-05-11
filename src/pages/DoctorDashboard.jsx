@@ -481,3 +481,4 @@ export default DoctorDashboard;
 // Reset modal state on close
 // Validation error styles
 // Daily patient stat counters
+// Mobile prescription layout
