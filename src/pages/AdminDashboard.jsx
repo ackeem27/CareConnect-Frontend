@@ -264,3 +264,4 @@ export default AdminDashboard;
 // Empty state: 'No recent activity'
 // Pre-save config validation
 // z-index fix for dropdown
+// ActivityChart component extracted
