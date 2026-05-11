@@ -523,3 +523,4 @@ export default function ReceptionistDashboard() {
 // Correct week start/end dates
 // Filter out booked slots
 // Test: Day/Week/Month views
+// DST adjustment for visual layout
