@@ -524,3 +524,4 @@ export default function ReceptionistDashboard() {
 // Filter out booked slots
 // Test: Day/Week/Month views
 // DST adjustment for visual layout
+// Updated react-big-calendar
