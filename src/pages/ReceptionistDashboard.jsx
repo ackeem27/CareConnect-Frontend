@@ -506,3 +506,4 @@ export default function ReceptionistDashboard() {
 // Empty queue: show 'No patients waiting' state
 // Format: HH:MM AM/PM
 // Min date: today, no past dates allowed
+// Debounce approval actions to prevent double-submit
