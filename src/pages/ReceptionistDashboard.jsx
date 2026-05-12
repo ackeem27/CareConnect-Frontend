@@ -515,3 +515,4 @@ export default function ReceptionistDashboard() {
 // Search result pagination fix
 // Filter schedule by doctor
 // Test: Walk-in registration flow
+// Fetch latest schedule before approve
