@@ -327,3 +327,4 @@ export default PatientDashboard;
 // Format: '2 hours ago'
 // Cypress e2e tests added
 // Truncate long names with ellipsis
+// Prevent past date selection
