@@ -516,3 +516,4 @@ export default function ReceptionistDashboard() {
 // Filter schedule by doctor
 // Test: Walk-in registration flow
 // Fetch latest schedule before approve
+// Optimize SVGs for performance
