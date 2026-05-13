@@ -328,3 +328,4 @@ export default PatientDashboard;
 // Cypress e2e tests added
 // Truncate long names with ellipsis
 // Prevent past date selection
+// Use date-fns for timezone
