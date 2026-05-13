@@ -115,3 +115,4 @@ const UnifiedLogin = () => {
 export default UnifiedLogin;
 // Caps lock warning indicator
 // Component snapshot test added
+// Updated jwt-decode package
