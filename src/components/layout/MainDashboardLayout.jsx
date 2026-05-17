@@ -29,7 +29,7 @@ const MainDashboardLayout = ({ children, role: propRole }) => {
     { id: 'doctor', label: 'Doctor Hub', icon: <Stethoscope size={20} />, path: '/doctor', roles: ['doctor'] },
     { id: 'schedule', label: 'Reception/Schedule', icon: <Calendar size={20} />, path: '/receptionist?tab=schedule', roles: ['receptionist'] },
     { id: 'walkin', label: 'Walk-in Registration', icon: <UserPlus size={20} />, path: '/receptionist?tab=walkin', roles: ['receptionist'] },
-    { id: 'ai-eval', label: 'AI Evaluation', icon: <FlaskConical size={20} />, path: '/ai-evaluation', roles: ['admin', 'doctor', 'receptionist'] },
+    { id: 'ai-eval', label: 'AI Evaluation', icon: <FlaskConical size={20} />, path: '/ai-evaluation', roles: ['admin'] },
   ];
 
   const menuItems = allMenuItems.filter(item => item.roles.includes(role));
