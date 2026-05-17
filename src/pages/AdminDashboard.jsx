@@ -132,6 +132,60 @@ const AdminDashboard = () => {
           <div className="ad-stat-card"><div><span className="ad-stat-label">System Alerts</span><div className="ad-stat-value">{stats?.system_alerts || 0}</div><span className="ad-stat-change neutral">↓ 24%</span></div><div className="ad-stat-icon orange"><AlertCircle size={24} /></div></div>
         </div>
 
+        {/* AI Triage & Prioritization Evaluation Hub */}
+        <div className="ad-ai-evaluation-menu-card" style={{
+          background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(99, 102, 241, 0.2)',
+          borderRadius: '16px',
+          padding: '24px',
+          marginBottom: '28px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '24px',
+          boxShadow: '0 4px 20px rgba(99, 102, 241, 0.05)'
+        }}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+            <div style={{
+              width: '52px',
+              height: '52px',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)'
+            }}>
+              <FlaskConical size={24} color="white" />
+            </div>
+            <div>
+              <h2 style={{fontSize: '18px', fontWeight: 800, color: '#0f172a', margin: '0 0 4px 0'}}>AI Triage & Prioritization Evaluation Hub</h2>
+              <p style={{fontSize: '13px', color: '#64748b', margin: 0}}>Evaluate clinical test cases, audit Gemini 1.5 Flash triage performance, and check sorting accuracy logs.</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => navigate('/ai-evaluation')}
+            style={{
+              padding: '12px 24px',
+              background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '10px',
+              fontWeight: 700,
+              fontSize: '13px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(99, 102, 241, 0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease-in-out'
+            }}
+          >
+            Launch Evaluation Tool
+          </button>
+        </div>
+
         <div className="ad-content-grid">
           <div className="ad-users-section">
             <div className="ad-section-header">
