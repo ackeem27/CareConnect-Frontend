@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Activity, Stethoscope, Calendar, UserPlus, LogOut, 
-  Search, User, Heart, Settings, BarChart3, FlaskConical
+  Search, Heart, FlaskConical
 } from 'lucide-react';
 import { authService } from '../../services/dataService';
 import NotificationPanel from './NotificationPanel';
@@ -29,8 +29,6 @@ const MainDashboardLayout = ({ children, role: propRole }) => {
     { id: 'doctor', label: 'Doctor Hub', icon: <Stethoscope size={20} />, path: '/doctor', roles: ['doctor'] },
     { id: 'schedule', label: 'Reception/Schedule', icon: <Calendar size={20} />, path: '/receptionist?tab=schedule', roles: ['receptionist'] },
     { id: 'walkin', label: 'Walk-in Registration', icon: <UserPlus size={20} />, path: '/receptionist?tab=walkin', roles: ['receptionist'] },
-    { id: 'admin-users', label: 'User Management', icon: <Settings size={20} />, path: '/admin', roles: ['admin'] },
-    { id: 'admin-activity', label: 'System Monitor', icon: <BarChart3 size={20} />, path: '/admin', roles: ['admin'] },
     { id: 'ai-eval', label: 'AI Evaluation', icon: <FlaskConical size={20} />, path: '/ai-evaluation', roles: ['admin', 'doctor', 'receptionist'] },
   ];
 
