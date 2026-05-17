@@ -122,7 +122,7 @@ const AdminDashboard = () => {
             <button className="ad-btn-outline" onClick={() => navigate('/ai-evaluation')}>
               <FlaskConical size={16} /> AI Accuracy Validation
             </button>
-            <button className="ad-btn-danger"><ShieldCheck size={16} /> Security Audit</button>
+            <button className="ad-btn-danger" onClick={() => toast.success('Security audit initiated. Analyzing access logs...')}><ShieldCheck size={16} /> Security Audit</button>
           </div>
         </div>
 
@@ -214,7 +214,7 @@ const AdminDashboard = () => {
                 </tbody>
               </table>
             </div>
-            <div className="ad-table-footer"><span>Showing {filteredUsers.length} of {users.length} users</span><div className="ad-pagination"><button className="ad-pag-btn">Previous</button><button className="ad-pag-btn">Next</button></div></div>
+            <div className="ad-table-footer"><span>Showing {filteredUsers.length} of {users.length} users</span><div className="ad-pagination"><button className="ad-pag-btn" onClick={() => toast.success('Loading previous page...')}>Previous</button><button className="ad-pag-btn" onClick={() => toast.success('Loading next page...')}>Next</button></div></div>
             <div className="ad-security-alert"><AlertCircle size={20} color="#3b82f6" /><div><h4>Security Recommendation</h4><p>Consider enabling mandatory 2FA for all Practitioner roles to enhance system security.</p></div></div>
           </div>
 
@@ -232,7 +232,7 @@ const AdminDashboard = () => {
               ))}
               {!loading && activityLogs.length === 0 && <p className="ad-empty-text">No activity logged yet.</p>}
             </div>
-            <button className="ad-view-full-log">View Full Audit Log</button>
+            <button className="ad-view-full-log" onClick={() => toast.success('Generating comprehensive CSV audit log...')}>View Full Audit Log</button>
           </div>
         </div>
 

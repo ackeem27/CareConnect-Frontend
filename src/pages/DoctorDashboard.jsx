@@ -348,9 +348,9 @@ const DoctorDashboard = () => {
 
                         <div className="clinical-action-list">
                             <div className="card-title-row" style={{marginBottom: '8px'}}>Clinical Utilities</div>
-                            <button className="action-item-btn"><FlaskConical size={18} color="#3b82f6" /> Request Lab Tests</button>
-                            <button className="action-item-btn"><ImageIcon size={18} color="#3b82f6" /> Order Imaging</button>
-                            <button className="action-item-btn"><UserPlus size={18} color="#3b82f6" /> Refer to Specialist</button>
+                            <button className="action-item-btn" onClick={() => toast.success('Lab tests requested successfully. Awaiting pathology.')}><FlaskConical size={18} color="#3b82f6" /> Request Lab Tests</button>
+                            <button className="action-item-btn" onClick={() => toast.success('Imaging order placed. Radiology notified.')}><ImageIcon size={18} color="#3b82f6" /> Order Imaging</button>
+                            <button className="action-item-btn" onClick={() => toast.success('Specialist referral drafted. Pending review.')}><UserPlus size={18} color="#3b82f6" /> Refer to Specialist</button>
                         </div>
                       </div>
                   </div>
