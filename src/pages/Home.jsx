@@ -2,6 +2,7 @@ import './Home.css';
 import React, { useEffect } from 'react';
 import { Heart, Activity, Stethoscope, Users, ShieldCheck, CalendarCheck, Clock, Shield, Plus, ChevronRight, BrainCircuit, Lock, Fingerprint, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import ThemeToggle from '../components/ThemeToggle';
 
 function Home() {
     // Add staggered animation classes when component mounts
@@ -33,8 +34,11 @@ function Home() {
                     <button className="nav-link-btn active">Home</button>
                     <a href="#about" className="nav-link-btn">How it Works</a>
                     <a href="#security" className="nav-link-btn">Security</a>
+                    <div style={{ display: 'flex', alignItems: 'center', marginLeft: '8px', marginRight: '8px' }}>
+                        <ThemeToggle />
+                    </div>
                     <Link to="/login">
-                        <button className="nav-link-btn" style={{color: '#1e293b', fontWeight: '700'}}>Log In</button>
+                        <button className="nav-link-btn" style={{color: 'var(--text-primary)', fontWeight: '700'}}>Log In</button>
                     </Link>
                     <Link to="/register">
                         <button className="nav-cta-btn">Register</button>

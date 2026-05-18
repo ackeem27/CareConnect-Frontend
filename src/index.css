@@ -2,32 +2,43 @@
 
 :root {
   /* Core Colors */
-  --primary: #0084ff;      
+  --primary: #0084ff;
   --primary-hover: #0073e6;
   --secondary: #64748b;
   --accent: #10b981;
-  
+
   /* Backgrounds */
   --bg-main: #f8fafc;
   --bg-card: #ffffff;
-  
+
   /* Typography */
   --text-primary: #1e293b;
   --text-secondary: #64748b;
   --text-inverse: #ffffff;
-  
+
   /* Borders and UI */
   --border: #e2e8f0;
-  
+
   /* Status Colors */
   --urgent: #ef4444;
   --critical: #dc2626;
   --routine: #10b981;
   --info: #3b82f6;
-  
+
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='dark'] {
+  --bg-main: #0f172a;
+  --bg-card: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-inverse: #1e293b;
+  --border: #334155;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -42,6 +53,7 @@ body {
   color: var(--text-primary);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a {
@@ -73,8 +85,9 @@ button {
   background: var(--bg-card);
   border-radius: 12px;
   border: 1px solid var(--border);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
   padding: 1.5rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .badge {
@@ -85,7 +98,22 @@ button {
   text-transform: capitalize;
 }
 
-.badge-urgent { background: #fee2e2; color: #ef4444; }
-.badge-critical { background: #ef4444; color: #ffffff; }
-.badge-routine { background: #ecfdf5; color: #10b981; }
-.badge-info { background: #eff6ff; color: #3b82f6; }
+.badge-urgent {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.badge-critical {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.badge-routine {
+  background: #ecfdf5;
+  color: #10b981;
+}
+
+.badge-info {
+  background: #eff6ff;
+  color: #3b82f6;
+}
