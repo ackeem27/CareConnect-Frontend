@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { authService } from '../../services/dataService';
 import NotificationPanel from './NotificationPanel';
+import ThemeToggle from '../ThemeToggle';
 import './MainDashboardLayout.css';
 
 const MainDashboardLayout = ({ children, role: propRole }) => {
@@ -91,6 +92,7 @@ const MainDashboardLayout = ({ children, role: propRole }) => {
               <Search size={16} />
               <input type="text" placeholder="Search patients..." />
             </div>
+            <ThemeToggle />
             <NotificationPanel />
             <div className="header-profile">
               <img src={`https://ui-avatars.com/api/?background=random&color=fff&name=${user.name || 'Staff'}`} alt="Profile" />
