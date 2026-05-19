@@ -17,7 +17,7 @@
   --glass-border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-[data-theme='dark'] {
+:root[data-theme='dark'] {
   --bg-light: #0f172a;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
@@ -179,7 +179,7 @@ body {
 
 .nav-cta-btn {
   background: var(--text-main);
-  color: var(--white);
+  color: var(--bg-light);
   border: none;
   padding: 12px 24px;
   border-radius: 100px;
@@ -190,7 +190,8 @@ body {
 }
 
 .nav-cta-btn:hover {
-  background: #334155;
+  background: var(--primary-color);
+  color: #FFFFFF;
   transform: translateY(-2px);
 }
 
