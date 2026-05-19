@@ -25,6 +25,7 @@ const PatientDashboard = () => {
   const [appointments, setAppointments] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [expandedApptId, setExpandedApptId] = useState(null);
 
   useEffect(() => {
     const currentUser = authService.getCurrentUser();
@@ -174,12 +175,25 @@ const PatientDashboard = () => {
                 <div className="pd-appt-list">
                     {appointments.length > 0 ? (
                       appointments.map((appt) => (
-                        <div key={appt.id} className="pd-appt-card">
+                        <div 
+                          key={appt.id} 
+                          className="pd-appt-card" 
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => setExpandedApptId(expandedApptId === appt.id ? null : appt.id)}
+                        >
                           <div className="pd-appt-avatar bg-gray-subtle">
                             <Stethoscope size={24} color="#64748b" />
                           </div>
                           <div className="pd-appt-info">
-                            <h4>AI Triage: {appt.priority_level}</h4>
+                            <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              AI Triage: 
+                              <span style={{
+                                color: appt.priority_level === 'HIGH' ? '#dc2626' : appt.priority_level === 'MEDIUM' ? '#d97706' : '#2563eb',
+                                fontWeight: 800
+                              }}>
+                                {appt.priority_level}
+                              </span>
+                            </h4>
                             <p className="pd-appt-desc">Symptoms: {Array.isArray(appt.symptoms) ? appt.symptoms.join(', ') : appt.symptoms}</p>
                             <div className="pd-appt-meta">
                               <span><CalendarIcon /> {new Date(appt.created_at).toLocaleDateString()}</span>
@@ -188,11 +202,75 @@ const PatientDashboard = () => {
                           </div>
                           <div className="pd-appt-right">
                             <span className={`pd-badge-upcoming ${appt.status === 'completed' ? 'bg-green' : 'bg-blue'}`}>{appt.status.toUpperCase()}</span>
-                            <ChevronRight size={20} color="#94a3b8" />
+                            <ChevronRight 
+                              size={20} 
+                              color="#94a3b8" 
+                              style={{ 
+                                transform: expandedApptId === appt.id ? 'rotate(90deg)' : 'none',
+                                transition: 'transform 0.2s ease'
+                              }}
+                            />
                           </div>
                           
+                          {expandedApptId === appt.id && (
+                            <div className="pd-appt-triage-detail" onClick={(e) => e.stopPropagation()} style={{gridColumn: '1 / -1', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #f1f5f9'}}>
+                              <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#1e293b', fontWeight: 600, marginBottom: '12px'}}>
+                                <Activity size={16} color="#3b82f6" /> AI Triage Assessment Details
+                              </div>
+                              
+                              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '16px'}}>
+                                <div style={{background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0'}}>
+                                  <span style={{fontSize: '11px', color: '#64748b', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Priority Level</span>
+                                  <span style={{
+                                    fontSize: '15px', 
+                                    fontWeight: 700, 
+                                    color: appt.priority_level === 'HIGH' ? '#dc2626' : appt.priority_level === 'MEDIUM' ? '#d97706' : '#2563eb'
+                                  }}>
+                                    {appt.priority_level}
+                                  </span>
+                                </div>
+                                
+                                <div style={{background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0'}}>
+                                  <span style={{fontSize: '11px', color: '#64748b', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Priority Score</span>
+                                  <span style={{fontSize: '15px', fontWeight: 700, color: '#1e293b'}}>{appt.priority_score} / 100</span>
+                                </div>
+
+                                <div style={{background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0'}}>
+                                  <span style={{fontSize: '11px', color: '#64748b', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em'}}>AI Model Used</span>
+                                  <span style={{fontSize: '13px', fontWeight: 600, color: '#475569'}}>{appt.ai_model_used || 'gemini-1.5-flash'}</span>
+                                </div>
+                              </div>
+
+                              <div style={{marginBottom: '16px'}}>
+                                <span style={{fontSize: '11px', color: '#64748b', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px'}}>Clinical Reason & Logic</span>
+                                <p style={{fontSize: '14px', color: '#334155', background: '#faf5ff', padding: '12px', borderRadius: '8px', border: '1px solid #f3e8ff', margin: 0, lineHeight: 1.5}}>
+                                  {appt.ai_reasoning || "Triage evaluation completed successfully."}
+                                </p>
+                              </div>
+
+                              {appt.first_aid_advice && appt.first_aid_advice.length > 0 && (
+                                <div style={{marginTop: '16px'}}>
+                                  <span style={{fontSize: '11px', color: '#64748b', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px'}}>First-Aid & Safety Recommendations</span>
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
+                                    {appt.first_aid_advice.map((item, index) => (
+                                      <div key={index} style={{background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'flex-start', gap: '10px'}}>
+                                        <div style={{background: '#10b981', color: 'white', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 'bold', flexShrink: 0, marginTop: '2px'}}>
+                                          ✓
+                                        </div>
+                                        <div>
+                                          <div style={{fontWeight: 700, color: '#064e3b', fontSize: '13px', textTransform: 'capitalize'}}>{item.symptom || item["symptom"]}</div>
+                                          <div style={{color: '#065f46', fontSize: '13px', marginTop: '2px', lineHeight: 1.4}}>{item.advice || item["advice"]}</div>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
                           {appt.status === 'completed' && (appt.diagnosis || appt.notes) && (
-                            <div className="pd-appt-record" style={{gridColumn: '1 / -1', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #f1f5f9'}}>
+                            <div className="pd-appt-record" onClick={(e) => e.stopPropagation()} style={{gridColumn: '1 / -1', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #f1f5f9'}}>
                               <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#1e293b', fontWeight: 600, marginBottom: '8px'}}>
                                 <FileText size={16} color="#3b82f6" /> Medical Record
                               </div>
