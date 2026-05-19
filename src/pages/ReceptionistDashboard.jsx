@@ -502,26 +502,3 @@ export default function ReceptionistDashboard() {
     </div>
   );
 }
-// Show warning modal on scheduling conflict
-// Empty queue: show 'No patients waiting' state
-// Format: HH:MM AM/PM
-// Min date: today, no past dates allowed
-// Debounce approval actions to prevent double-submit
-// Refresh schedule data on date change
-// Toggle weekend visibility in schedule view
-// Walk-in form required fields
-// Extracted ApprovalTable
-// Retain override reason on close
-// Search result pagination fix
-// Filter schedule by doctor
-// Test: Walk-in registration flow
-// Fetch latest schedule before approve
-// Optimize SVGs for performance
-// Timezone handling for slots
-// Memoize schedule visualization
-// Default to unavailable if missing
-// Correct week start/end dates
-// Filter out booked slots
-// Test: Day/Week/Month views
-// DST adjustment for visual layout
-// Updated react-big-calendar

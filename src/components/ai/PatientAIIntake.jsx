@@ -358,4 +358,3 @@ const PatientAIIntake = () => {
 };
 
 export default PatientAIIntake;
-// Fuzzy search for symptom library

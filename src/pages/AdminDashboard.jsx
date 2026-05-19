@@ -309,14 +309,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-// Confirmation dialog before deletion
-// Loading state for save operations
-// AdminDashboard: Manages users, configs, and activity logs
-// Use memo for UserList component
-// Debounce search to 300ms
-// Skeleton UI while fetching users
-// Empty state: 'No recent activity'
-// Pre-save config validation
-// z-index fix for dropdown
-// ActivityChart component extracted
-// Redirect to login on 401

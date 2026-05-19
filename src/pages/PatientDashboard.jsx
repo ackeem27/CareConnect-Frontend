@@ -320,12 +320,3 @@ const CalendarIcon = () => (
 );
 
 export default PatientDashboard;
-// Force badge re-render on notification update
-// Empty state: show 'No appointments' message
-// Cancellation requires confirmation dialog
-// Fetch previous appointments
-// Format: '2 hours ago'
-// Cypress e2e tests added
-// Truncate long names with ellipsis
-// Prevent past date selection
-// Use date-fns for timezone
