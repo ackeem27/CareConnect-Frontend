@@ -163,8 +163,6 @@
 .animate-fade-up {
     animation: fadeInUp 0.5s ease-out forwards;
 }
-<<<<<<< Updated upstream
-=======
 /* Error state: red border with fade animation */
 /* Focus ring: 2px solid primary color */
 /* High contrast mode support */
@@ -213,4 +211,3 @@
 .form-input.has-icon-right {
     padding-right: 40px;
 }
->>>>>>> Stashed changes
