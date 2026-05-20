@@ -163,3 +163,53 @@
 .animate-fade-up {
     animation: fadeInUp 0.5s ease-out forwards;
 }
+<<<<<<< Updated upstream
+=======
+/* Focus ring: 2px solid primary color */
+/* High contrast mode support */
+/* Browser autofill style override */
+/* Tablet breakpoint adjustments */
+
+/* Input Icon Wrappers */
+.input-with-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-icon-left {
+    position: absolute;
+    left: 12px;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.input-icon-right {
+    position: absolute;
+    right: 12px;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.input-icon-right:hover {
+    color: #4b5563;
+}
+
+.form-input.has-icon-left {
+    padding-left: 40px;
+}
+
+.form-input.has-icon-right {
+    padding-right: 40px;
+}
+>>>>>>> Stashed changes

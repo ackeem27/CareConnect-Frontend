@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, Shield, Activity, Users, Stethoscope } from 'lucide-react';
+import { Heart, Shield, Activity, Users, Stethoscope, Lock, Eye, EyeOff } from 'lucide-react';
 import { authService } from '../../services/dataService';
 import '../../styles/auth/auth.css';
 import toast from 'react-hot-toast';
@@ -16,6 +16,8 @@ const UnifiedRegister = () => {
     password: '',
     passwordConfirmation: ''
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -152,11 +154,45 @@ const UnifiedRegister = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="form-group">
                 <label className="form-label">Password</label>
-                <input type="password" className="form-input" name="password" value={form.password} onChange={handleChange} required />
+                <div className="input-with-icon-wrapper">
+                  <div className="input-icon-left"><Lock size={18} /></div>
+                  <input 
+                    type={showPassword ? "text" : "password"} 
+                    className="form-input has-icon-left has-icon-right" 
+                    name="password" 
+                    value={form.password} 
+                    onChange={handleChange} 
+                    required 
+                  />
+                  <button 
+                    type="button" 
+                    className="input-icon-right"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
               <div className="form-group">
                 <label className="form-label">Confirm Password</label>
-                <input type="password" className="form-input" name="passwordConfirmation" value={form.passwordConfirmation} onChange={handleChange} required />
+                <div className="input-with-icon-wrapper">
+                  <div className="input-icon-left"><Lock size={18} /></div>
+                  <input 
+                    type={showPasswordConfirmation ? "text" : "password"} 
+                    className="form-input has-icon-left has-icon-right" 
+                    name="passwordConfirmation" 
+                    value={form.passwordConfirmation} 
+                    onChange={handleChange} 
+                    required 
+                  />
+                  <button 
+                    type="button" 
+                    className="input-icon-right"
+                    onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
+                  >
+                    {showPasswordConfirmation ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
             </div>
 
