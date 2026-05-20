@@ -159,6 +159,7 @@ const UnifiedRegister = () => {
                   <input 
                     type={showPassword ? "text" : "password"} 
                     className="form-input has-icon-left has-icon-right" 
+                    placeholder="Password"
                     name="password" 
                     value={form.password} 
                     onChange={handleChange} 
@@ -180,6 +181,7 @@ const UnifiedRegister = () => {
                   <input 
                     type={showPasswordConfirmation ? "text" : "password"} 
                     className="form-input has-icon-left has-icon-right" 
+                    placeholder="Password"
                     name="passwordConfirmation" 
                     value={form.passwordConfirmation} 
                     onChange={handleChange} 

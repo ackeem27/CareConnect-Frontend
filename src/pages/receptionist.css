@@ -282,6 +282,7 @@ body {
 
 .login-input::placeholder {
   color: var(--color-text-tertiary);
+  opacity: 0.5; /* Make placeholder faded */
 }
 
 .login-toggle-pw {

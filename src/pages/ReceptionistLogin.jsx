@@ -209,7 +209,7 @@ export default function ReceptionistLogin({ onLoginSuccess, onBack }) {
                     id="password"
                     className="login-input login-input--password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => { setPassword(e.target.value); setError(""); }}
                     autoComplete="current-password"

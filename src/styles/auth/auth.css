@@ -211,3 +211,8 @@
 .form-input.has-icon-right {
     padding-right: 40px;
 }
+
+.form-input::placeholder {
+    color: #9ca3af;
+    opacity: 0.5;
+}
