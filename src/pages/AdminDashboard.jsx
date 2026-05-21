@@ -90,10 +90,38 @@ const AdminDashboard = () => {
     if (!d) return 'Never';
     const mins = Math.floor((Date.now() - new Date(d).getTime()) / 60000);
     if (mins < 1) return 'Just now';
-    if (mins < 60) return `${mins} mins ago`;
+    if (mins < 60) return `${mins} min${mins === 1 ? '' : 's'} ago`;
     const hrs = Math.floor(mins / 60);
     if (hrs < 24) return `${hrs} hour${hrs > 1 ? 's' : ''} ago`;
     return `${Math.floor(hrs / 24)} days ago`;
+  };
+
+  const renderLogDetails = (log) => {
+    const name = log.user_name || 'System';
+    let details = log.details || log.action || '';
+
+    if (log.action === 'user_login') {
+      details = details.replace(/^[A-Za-z]+\s+logged\s+in/i, 'logged in');
+    } else if (log.action === 'user_updated') {
+      const match = details.match(/Updated user ([^\s:]+)/i);
+      details = match ? `updated user: ${match[1]}` : 'updated user';
+    } else if (log.action === 'user_deactivated') {
+      details = details.replace(/^Deactivated user/i, 'deactivated user:');
+    } else if (log.action === 'config_updated') {
+      details = details
+        .replace(/^Updated config/i, 'updated config')
+        .replace(/_/g, ' ');
+    } else {
+      if (details.length > 0) {
+        details = details.charAt(0).toLowerCase() + details.slice(1);
+      }
+    }
+
+    return (
+      <p>
+        <strong>{name}</strong> {details}
+      </p>
+    );
   };
 
   if (!user) return null;
@@ -173,7 +201,7 @@ const AdminDashboard = () => {
               ) : activityLogs.slice(0, 8).map((log, i) => (
                 <div key={log.id || i} className="ad-activity-item">
                   <img src={`https://ui-avatars.com/api/?background=random&color=fff&name=${log.user_name || 'System'}`} alt="" className="ad-activity-avatar" />
-                  <div className="ad-activity-content"><p><strong>{log.user_name || 'System'}</strong> {log.details || log.action}</p><span className="ad-activity-time"><Clock size={12} /> {formatTimeAgo(log.created_at)}</span></div>
+                  <div className="ad-activity-content">{renderLogDetails(log)}<span className="ad-activity-time"><Clock size={12} /> {formatTimeAgo(log.created_at)}</span></div>
                 </div>
               ))}
               {!loading && activityLogs.length === 0 && <p className="ad-empty-text">No activity logged yet.</p>}

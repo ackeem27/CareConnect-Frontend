@@ -43,12 +43,12 @@
 .ad-filter-btn { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; cursor: pointer; color: #64748b; }
 .ad-table-wrap { overflow-x: auto; }
 .ad-table { width: 100%; border-collapse: collapse; }
-.ad-table th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 600; color: #94a3b8; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; }
-.ad-table td { padding: 14px 12px; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #334155; }
-.ad-user-cell { display: flex; align-items: center; gap: 10px; }
-.ad-user-cell img { width: 34px; height: 34px; border-radius: 50%; }
-.ad-user-cell span { font-weight: 600; }
-.ad-email-cell { color: #64748b; }
+.ad-table th { text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; }
+.ad-table td { padding: 16px 16px; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #334155; }
+.ad-user-cell { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+.ad-user-cell img { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; }
+.ad-user-cell span { font-weight: 600; color: #0f172a; }
+.ad-email-cell { color: #64748b; white-space: nowrap; }
 .ad-role-badge { padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; }
 .role-admin { background: #fef3c7; color: #92400e; }
 .role-doctor { background: #eff6ff; color: #1d4ed8; }
