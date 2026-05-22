@@ -332,6 +332,22 @@ export const adminService = {
     }
   },
 
+  async reactivateUser(id) {
+    try {
+      return await apiClient.patch(`/admin/users/${id}/reactivate`);
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async fetchAuditSummary() {
+    try {
+      return await apiClient.get('/admin/audit_summary');
+    } catch (error) {
+      throw error;
+    }
+  },
+
   async fetchActivityLogs() {
     try {
       return await apiClient.get('/admin/activity_logs');

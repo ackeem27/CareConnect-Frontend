@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   Users, Calendar, AlertCircle, Activity, Search, Filter,
   ChevronLeft, ChevronRight, Heart, Bell, LogOut, ShieldCheck,
-  Download, Clock, Database, Wifi, Edit3, Trash2, Server, Settings, Save, X, FlaskConical
+  Download, Clock, Database, Wifi, Edit3, Trash2, Server, Settings, Save, X, FlaskConical, UserCheck
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authService, adminService } from '../services/dataService';
@@ -16,6 +16,7 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [activityLogs, setActivityLogs] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [roleFilter, setRoleFilter] = useState('all');
   const [editingUser, setEditingUser] = useState(null);
   const [editRole, setEditRole] = useState('');
   const [loading, setLoading] = useState(true);
@@ -57,6 +58,15 @@ const AdminDashboard = () => {
     catch (err) { toast.error(err.message); }
   };
 
+  const handleReactivate = async (userId) => {
+    if (!window.confirm('Reactivate this user?')) return;
+    try {
+      await adminService.reactivateUser(userId);
+      toast.success('User reactivated successfully');
+      loadData();
+    } catch (err) { toast.error(err.message || 'Failed to reactivate user'); }
+  };
+
   // FR25: Save config
   const handleSaveConfig = async (configId) => {
     try {
@@ -77,8 +87,9 @@ const AdminDashboard = () => {
   const handleSignOut = () => { authService.logout(); navigate('/'); };
 
   const filteredUsers = users.filter(u =>
-    u.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    u.email?.toLowerCase().includes(searchQuery.toLowerCase())
+    (roleFilter === 'all' || u.role === roleFilter) &&
+    (u.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    u.email?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const getRoleBadge = (role) => {
@@ -192,6 +203,17 @@ const AdminDashboard = () => {
               <div><h2>User Management</h2><p>Search, filter, and manage all accounts.</p></div>
               <div className="ad-search-row">
                 <div className="ad-search-box"><Search size={16} /><input type="text" placeholder="Search name or email..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} /></div>
+                <select
+                  value={roleFilter}
+                  onChange={e => setRoleFilter(e.target.value)}
+                  style={{ padding: '8px 12px', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '13px', color: '#374151', background: 'white', cursor: 'pointer' }}
+                >
+                  <option value="all">All Roles</option>
+                  <option value="patient">Patient</option>
+                  <option value="doctor">Practitioner</option>
+                  <option value="receptionist">Receptionist</option>
+                  <option value="admin">Admin</option>
+                </select>
                 <button className="ad-filter-btn"><Filter size={16} /></button>
               </div>
             </div>
@@ -201,6 +223,8 @@ const AdminDashboard = () => {
                 <tbody>
                   {loading && users.length === 0 ? (
                     <tr><td colSpan={6} style={{padding:40}}><div className="skeleton-loader" style={{height:'40px', width:'100%', borderRadius:'8px', background:'#f1f5f9', animation:'pulse 1.5s infinite'}}></div></td></tr>
+                  ) : filteredUsers.length === 0 ? (
+                    <tr><td colSpan={6} style={{textAlign:'center', padding:'40px', color:'#94a3b8', fontSize:'14px'}}>No users match your search or filter criteria.</td></tr>
                   ) : filteredUsers.map(u => (
                     <tr key={u.id}>
                       <td><div className="ad-user-cell"><img src={`https://ui-avatars.com/api/?background=random&color=fff&name=${u.name || u.email}`} alt="" /><span>{u.name || 'Unknown'}</span></div></td>
@@ -208,7 +232,7 @@ const AdminDashboard = () => {
                       <td>{editingUser === u.id ? <select value={editRole} onChange={e => setEditRole(e.target.value)} className="ad-role-select"><option value="patient">Patient</option><option value="doctor">Practitioner</option><option value="receptionist">Receptionist</option><option value="admin">Admin</option></select> : getRoleBadge(u.role)}</td>
                       <td><span className={`ad-status-badge ${u.active ? 'active' : 'inactive'}`}><span className="ad-status-dot" /> {u.active ? 'Active' : 'Inactive'}</span></td>
                       <td className="ad-time-cell">{formatTimeAgo(u.last_login_at)}</td>
-                      <td>{editingUser === u.id ? <div className="ad-edit-actions"><button className="ad-save-btn" onClick={() => handleUpdateRole(u.id)}>Save</button><button className="ad-cancel-btn" onClick={() => setEditingUser(null)}>✕</button></div> : <div className="ad-action-dropdown"><button className="ad-action-btn" onClick={() => { setEditingUser(u.id); setEditRole(u.role); }}><Edit3 size={14} /></button><button className="ad-action-btn danger" onClick={() => handleDeactivate(u.id)}><Trash2 size={14} /></button></div>}</td>
+                      <td>{editingUser === u.id ? <div className="ad-edit-actions"><button className="ad-save-btn" onClick={() => handleUpdateRole(u.id)}>Save</button><button className="ad-cancel-btn" onClick={() => setEditingUser(null)}>✕</button></div> : <div className="ad-action-dropdown"><button className="ad-action-btn" title="Edit Role" onClick={() => { setEditingUser(u.id); setEditRole(u.role); }}><Edit3 size={14} /></button>{u.active ? <button className="ad-action-btn danger" title="Deactivate" onClick={() => handleDeactivate(u.id)}><Trash2 size={14} /></button> : <button className="ad-action-btn" title="Reactivate" style={{color:'#10b981'}} onClick={() => handleReactivate(u.id)}><UserCheck size={14} /></button>}</div>}</td>
                     </tr>
                   ))}
                 </tbody>

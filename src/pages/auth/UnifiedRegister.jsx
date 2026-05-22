@@ -1,9 +1,29 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, Shield, Activity, Users, Stethoscope } from 'lucide-react';
+import { Heart, Shield, Activity, Users, Stethoscope, Eye, EyeOff, CheckCircle, XCircle } from 'lucide-react';
 import { authService } from '../../services/dataService';
 import '../../styles/auth/auth.css';
 import toast from 'react-hot-toast';
+
+const getPasswordStrength = (password) => {
+  let score = 0;
+  const checks = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    number: /\d/.test(password),
+    special: /[@$!%*?&]/.test(password),
+  };
+  score = Object.values(checks).filter(Boolean).length;
+  const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+  const colors = ['', '#ef4444', '#f59e0b', '#3b82f6', '#10b981'];
+  return { score, checks, label: labels[score] || '', color: colors[score] || '' };
+};
+
+const PasswordCheck = ({ ok, label }) => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: ok ? '#10b981' : '#9ca3af' }}>
+    {ok ? <CheckCircle size={11} /> : <XCircle size={11} />} {label}
+  </div>
+);
 
 const UnifiedRegister = () => {
   const [role, setRole] = useState('patient');
@@ -16,6 +36,8 @@ const UnifiedRegister = () => {
     password: '',
     passwordConfirmation: ''
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -24,12 +46,18 @@ const UnifiedRegister = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const strength = getPasswordStrength(form.password);
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
-    
+
     if (form.password !== form.passwordConfirmation) {
       return setError('Passwords do not match');
+    }
+
+    if (strength.score < 4) {
+      return setError('Password does not meet complexity requirements');
     }
 
     setLoading(true);
@@ -56,7 +84,6 @@ const UnifiedRegister = () => {
           role: role
         });
         toast.success('Registration successful! Please verify your email.');
-        // Staff typically need to wait for approval or verify email, but we'll route them appropriately
         if (role === 'doctor') navigate('/doctor');
         else if (role === 'receptionist') navigate('/receptionist');
         else navigate('/');
@@ -68,6 +95,24 @@ const UnifiedRegister = () => {
       setLoading(false);
     }
   };
+
+  const roleBtn = (r, icon, label) => (
+    <button
+      type="button"
+      onClick={() => setRole(r)}
+      style={{
+        flex: 1, padding: '10px', borderRadius: '8px',
+        border: role === r ? '2px solid #3b82f6' : '1px solid #e5e7eb',
+        background: role === r ? '#eff6ff' : 'white',
+        color: role === r ? '#1d4ed8' : '#4b5563',
+        fontWeight: '600', cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+        transition: 'all 0.15s'
+      }}
+    >
+      {icon} {label}
+    </button>
+  );
 
   return (
     <div className="auth-container">
@@ -86,7 +131,7 @@ const UnifiedRegister = () => {
             <Stethoscope size={20} color="rgba(255,255,255,0.8)" />
           </div>
         </div>
-        
+
         <div className="auth-form-area" style={{padding: '40px 50px'}}>
           <h2 style={{ marginBottom: '8px' }}>Create Account</h2>
           <p style={{ color: '#6B7280', marginBottom: '24px', fontSize: '14px' }}>
@@ -94,32 +139,14 @@ const UnifiedRegister = () => {
           </p>
 
           <div style={{ display: 'flex', gap: '10px', marginBottom: '24px' }}>
-            <button 
-              type="button"
-              onClick={() => setRole('patient')}
-              style={{ flex: 1, padding: '10px', borderRadius: '8px', border: role === 'patient' ? '2px solid #3b82f6' : '1px solid #e5e7eb', background: role === 'patient' ? '#eff6ff' : 'white', color: role === 'patient' ? '#1d4ed8' : '#4b5563', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-            >
-              <Users size={16} /> Patient
-            </button>
-            <button 
-              type="button"
-              onClick={() => setRole('doctor')}
-              style={{ flex: 1, padding: '10px', borderRadius: '8px', border: role === 'doctor' ? '2px solid #3b82f6' : '1px solid #e5e7eb', background: role === 'doctor' ? '#eff6ff' : 'white', color: role === 'doctor' ? '#1d4ed8' : '#4b5563', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-            >
-              <Stethoscope size={16} /> Doctor
-            </button>
-            <button 
-              type="button"
-              onClick={() => setRole('receptionist')}
-              style={{ flex: 1, padding: '10px', borderRadius: '8px', border: role === 'receptionist' ? '2px solid #3b82f6' : '1px solid #e5e7eb', background: role === 'receptionist' ? '#eff6ff' : 'white', color: role === 'receptionist' ? '#1d4ed8' : '#4b5563', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-            >
-              <Activity size={16} /> Staff
-            </button>
+            {roleBtn('patient', <Users size={16} />, 'Patient')}
+            {roleBtn('doctor', <Stethoscope size={16} />, 'Doctor')}
+            {roleBtn('receptionist', <Activity size={16} />, 'Staff')}
           </div>
 
           <form onSubmit={handleRegister}>
             {error && <div style={{ color: '#ef4444', backgroundColor: '#fef2f2', padding: '10px', borderRadius: '6px', marginBottom: '16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}><Shield size={14}/> {error}</div>}
-            
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="form-group">
                 <label className="form-label">First Name</label>
@@ -152,11 +179,75 @@ const UnifiedRegister = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="form-group">
                 <label className="form-label">Password</label>
-                <input type="password" className="form-input" name="password" value={form.password} onChange={handleChange} required />
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    className="form-input"
+                    name="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    required
+                    style={{ paddingRight: '42px' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: '0' }}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+
+                {/* Password strength bar */}
+                {form.password && (
+                  <div style={{ marginTop: '8px' }}>
+                    <div style={{ display: 'flex', gap: '4px', marginBottom: '6px' }}>
+                      {[1,2,3,4].map(i => (
+                        <div key={i} style={{
+                          flex: 1, height: '3px', borderRadius: '2px',
+                          background: i <= strength.score ? strength.color : '#e5e7eb',
+                          transition: 'background 0.3s'
+                        }} />
+                      ))}
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2px 12px' }}>
+                      <PasswordCheck ok={strength.checks.length} label="8+ characters" />
+                      <PasswordCheck ok={strength.checks.uppercase} label="Uppercase letter" />
+                      <PasswordCheck ok={strength.checks.number} label="Number" />
+                      <PasswordCheck ok={strength.checks.special} label="Special character" />
+                    </div>
+                  </div>
+                )}
               </div>
+
               <div className="form-group">
                 <label className="form-label">Confirm Password</label>
-                <input type="password" className="form-input" name="passwordConfirmation" value={form.passwordConfirmation} onChange={handleChange} required />
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type={showConfirm ? 'text' : 'password'}
+                    className="form-input"
+                    name="passwordConfirmation"
+                    value={form.passwordConfirmation}
+                    onChange={handleChange}
+                    required
+                    style={{ paddingRight: '42px' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm(!showConfirm)}
+                    style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: '0' }}
+                    aria-label={showConfirm ? 'Hide password' : 'Show password'}
+                  >
+                    {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                {form.passwordConfirmation && form.password !== form.passwordConfirmation && (
+                  <p style={{ fontSize: '11px', color: '#ef4444', marginTop: '4px' }}>Passwords do not match</p>
+                )}
+                {form.passwordConfirmation && form.password === form.passwordConfirmation && (
+                  <p style={{ fontSize: '11px', color: '#10b981', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}><CheckCircle size={11} /> Passwords match</p>
+                )}
               </div>
             </div>
 

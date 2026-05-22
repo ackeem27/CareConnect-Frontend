@@ -12,6 +12,7 @@ import AppointmentConfirmation from './pages/AppointmentConfirmation';
 // Auth Pages
 import UnifiedLogin from './pages/auth/UnifiedLogin';
 import UnifiedRegister from './pages/auth/UnifiedRegister';
+import ForgotPassword from './pages/auth/ForgotPassword';
 
 // AI Components
 import PatientAIIntake from './components/ai/PatientAIIntake';
@@ -36,6 +37,7 @@ function App() {
           {/* Registration & Login */}
           <Route path="/login" element={<UnifiedLogin />} />
           <Route path="/register" element={<UnifiedRegister />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           
           {/* Patient Module */}
           <Route path="/patient" element={<PatientDashboard />} />
