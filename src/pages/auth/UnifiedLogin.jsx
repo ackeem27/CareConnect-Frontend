@@ -118,7 +118,6 @@ const UnifiedLogin = () => {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   className="form-input"
-                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
