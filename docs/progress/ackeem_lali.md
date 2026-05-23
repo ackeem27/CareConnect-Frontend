@@ -9,3 +9,6 @@
 ## 2026-05-23 — Commit 3
 - fix: resolve state management issue in dashboard context
 
+## 2026-05-23 — Commit 4
+- style: standardize color palette across all components
+
