@@ -9,3 +9,6 @@
 ## 2026-05-23 — Commit 3
 - refactor: extract queue item into reusable component
 
+## 2026-05-23 — Commit 4
+- style: add priority-based color coding to queue cards
+
