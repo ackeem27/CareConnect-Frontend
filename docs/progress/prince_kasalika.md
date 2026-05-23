@@ -9,3 +9,6 @@
 ## 2026-05-23 — Commit 3
 - refactor: extract admin table into reusable data grid
 
+## 2026-05-23 — Commit 4
+- style: add hover effects and row selection to admin table
+
