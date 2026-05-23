@@ -9,3 +9,6 @@
 ## 2026-05-23 — Commit 3
 - refactor: extract OTP verification into standalone component
 
+## 2026-05-23 — Commit 4
+- style: add branded gradient to authentication sidebar
+
