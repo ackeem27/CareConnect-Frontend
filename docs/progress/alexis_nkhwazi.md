@@ -9,3 +9,6 @@
 ## 2026-05-23 — Commit 3
 - refactor: extract profile form into separate component
 
+## 2026-05-23 — Commit 4
+- style: add smooth transition animations to modal
+
