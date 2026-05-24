@@ -12,3 +12,6 @@
 ## 2026-05-23 — Commit 4
 - style: add branded gradient to authentication sidebar
 
+## 2026-05-24 — Commit 5
+- feat: implement forgot password flow with email input
+
