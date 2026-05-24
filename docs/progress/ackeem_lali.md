@@ -12,3 +12,6 @@
 ## 2026-05-23 — Commit 4
 - style: standardize color palette across all components
 
+## 2026-05-24 — Commit 5
+- refactor: extract common form validation utilities
+
