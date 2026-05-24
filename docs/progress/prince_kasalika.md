@@ -12,3 +12,6 @@
 ## 2026-05-23 — Commit 4
 - style: add hover effects and row selection to admin table
 
+## 2026-05-24 — Commit 5
+- feat: implement staff approval toggle with confirmation
+
