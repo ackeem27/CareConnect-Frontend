@@ -15,3 +15,6 @@
 ## 2026-05-24 — Commit 5
 - feat: implement walk-in registration form with validation
 
+## 2026-05-24 — Commit 6
+- fix: correct auto-refresh interval for queue updates
+
