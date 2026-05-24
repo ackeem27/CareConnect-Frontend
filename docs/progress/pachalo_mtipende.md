@@ -15,3 +15,6 @@
 ## 2026-05-24 — Commit 5
 - feat: implement forgot password flow with email input
 
+## 2026-05-24 — Commit 6
+- fix: correct form validation on registration page
+
