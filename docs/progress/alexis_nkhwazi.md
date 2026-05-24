@@ -15,3 +15,6 @@
 ## 2026-05-24 — Commit 5
 - feat: implement client-side image compression for avatars
 
+## 2026-05-24 — Commit 6
+- fix: handle network errors in profile update gracefully
+
