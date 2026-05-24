@@ -12,3 +12,6 @@
 ## 2026-05-23 — Commit 4
 - style: add smooth transition animations to modal
 
+## 2026-05-24 — Commit 5
+- feat: implement client-side image compression for avatars
+
