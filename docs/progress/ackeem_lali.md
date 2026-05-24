@@ -15,3 +15,6 @@
 ## 2026-05-24 — Commit 5
 - refactor: extract common form validation utilities
 
+## 2026-05-24 — Commit 6
+- feat: add loading skeleton components for data fetching
+
