@@ -12,3 +12,6 @@
 ## 2026-05-23 — Commit 4
 - style: add priority-based color coding to queue cards
 
+## 2026-05-24 — Commit 5
+- feat: implement walk-in registration form with validation
+
