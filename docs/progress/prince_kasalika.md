@@ -15,3 +15,6 @@
 ## 2026-05-24 — Commit 5
 - feat: implement staff approval toggle with confirmation
 
+## 2026-05-24 — Commit 6
+- fix: correct role badge color mapping in admin view
+
