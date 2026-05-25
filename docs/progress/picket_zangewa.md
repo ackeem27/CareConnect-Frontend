@@ -18,3 +18,6 @@
 ## 2026-05-24 — Commit 6
 - fix: correct auto-refresh interval for queue updates
 
+## 2026-05-25 — Commit 7
+- refactor: optimize queue rendering with React.memo
+
