@@ -18,3 +18,6 @@
 ## 2026-05-24 — Commit 6
 - feat: add loading skeleton components for data fetching
 
+## 2026-05-25 — Commit 7
+- fix: correct responsive breakpoints for mobile layout
+
