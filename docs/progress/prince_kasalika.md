@@ -21,3 +21,6 @@
 ## 2026-05-25 — Commit 7
 - refactor: improve admin dashboard filter performance
 
+## 2026-05-25 — Commit 8
+- style: polish admin stats cards with gradient backgrounds
+
