@@ -18,3 +18,6 @@
 ## 2026-05-24 — Commit 6
 - fix: correct role badge color mapping in admin view
 
+## 2026-05-25 — Commit 7
+- refactor: improve admin dashboard filter performance
+
