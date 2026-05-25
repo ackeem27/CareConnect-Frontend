@@ -21,3 +21,6 @@
 ## 2026-05-25 — Commit 7
 - fix: correct responsive breakpoints for mobile layout
 
+## 2026-05-25 — Commit 8
+- style: improve typography consistency with Inter font
+
