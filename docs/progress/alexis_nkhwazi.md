@@ -18,3 +18,6 @@
 ## 2026-05-24 — Commit 6
 - fix: handle network errors in profile update gracefully
 
+## 2026-05-25 — Commit 7
+- refactor: consolidate duplicate CSS in layout components
+
