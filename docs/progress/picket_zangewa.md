@@ -21,3 +21,6 @@
 ## 2026-05-25 — Commit 7
 - refactor: optimize queue rendering with React.memo
 
+## 2026-05-25 — Commit 8
+- style: improve spacing and visual hierarchy in dashboard
+
