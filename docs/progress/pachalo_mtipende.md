@@ -21,3 +21,6 @@
 ## 2026-05-25 — Commit 7
 - refactor: consolidate auth CSS into shared stylesheet
 
+## 2026-05-25 — Commit 8
+- style: improve input focus states and error highlighting
+
