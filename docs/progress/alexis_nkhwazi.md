@@ -21,3 +21,6 @@
 ## 2026-05-25 — Commit 7
 - refactor: consolidate duplicate CSS in layout components
 
+## 2026-05-25 — Commit 8
+- style: improve profile modal responsiveness on tablet
+
