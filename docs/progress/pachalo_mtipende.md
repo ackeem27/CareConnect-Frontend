@@ -18,3 +18,6 @@
 ## 2026-05-24 — Commit 6
 - fix: correct form validation on registration page
 
+## 2026-05-25 — Commit 7
+- refactor: consolidate auth CSS into shared stylesheet
+
