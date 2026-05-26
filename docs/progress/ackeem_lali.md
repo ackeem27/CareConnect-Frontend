@@ -24,3 +24,6 @@
 ## 2026-05-25 — Commit 8
 - style: improve typography consistency with Inter font
 
+## 2026-05-26 — Commit 9
+- refactor: optimize component re-renders with useMemo
+
