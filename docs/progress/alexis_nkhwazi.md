@@ -24,3 +24,6 @@
 ## 2026-05-25 — Commit 8
 - style: improve profile modal responsiveness on tablet
 
+## 2026-05-26 — Commit 9
+- feat: add form validation feedback with inline errors
+
