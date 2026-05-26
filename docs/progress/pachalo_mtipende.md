@@ -27,3 +27,6 @@
 ## 2026-05-26 — Commit 9
 - feat: add password strength indicator component
 
+## 2026-05-26 — Commit 10
+- fix: handle session expiry redirect to login page
+
