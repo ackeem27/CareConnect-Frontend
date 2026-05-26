@@ -27,3 +27,6 @@
 ## 2026-05-26 — Commit 9
 - refactor: optimize component re-renders with useMemo
 
+## 2026-05-26 — Commit 10
+- feat: implement global error boundary with fallback UI
+
