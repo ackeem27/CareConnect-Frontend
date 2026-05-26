@@ -24,3 +24,6 @@
 ## 2026-05-25 — Commit 8
 - style: improve spacing and visual hierarchy in dashboard
 
+## 2026-05-26 — Commit 9
+- feat: add patient search functionality to receptionist view
+
