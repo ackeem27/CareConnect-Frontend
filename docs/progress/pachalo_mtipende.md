@@ -24,3 +24,6 @@
 ## 2026-05-25 — Commit 8
 - style: improve input focus states and error highlighting
 
+## 2026-05-26 — Commit 9
+- feat: add password strength indicator component
+
