@@ -27,3 +27,6 @@
 ## 2026-05-26 — Commit 9
 - feat: add form validation feedback with inline errors
 
+## 2026-05-26 — Commit 10
+- fix: prevent double submission on profile save
+
