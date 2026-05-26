@@ -27,3 +27,6 @@
 ## 2026-05-26 — Commit 9
 - feat: add patient search functionality to receptionist view
 
+## 2026-05-26 — Commit 10
+- fix: handle WebSocket reconnection on connection drop
+
