@@ -27,3 +27,6 @@
 ## 2026-05-26 — Commit 9
 - feat: add search and filter functionality to staff list
 
+## 2026-05-26 — Commit 10
+- fix: handle empty state display when no staff pending
+
