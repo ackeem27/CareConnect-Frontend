@@ -5,6 +5,7 @@ import {
   Search, Heart, FlaskConical, User, X, Camera, Lock, Shield
 } from 'lucide-react';
 import { authService } from '../../services/dataService';
+import { API_HOST } from '../../services/apiClient';
 import NotificationPanel from './NotificationPanel';
 import toast from 'react-hot-toast';
 import './MainDashboardLayout.css';
@@ -166,7 +167,7 @@ const MainDashboardLayout = ({ children, role: propRole }) => {
   }
 
   // Get current avatar url
-  const avatarUrl = user.avatar_url ? `http://localhost:3001${user.avatar_url}` : `https://ui-avatars.com/api/?background=random&color=fff&name=${user.name || 'Staff'}`;
+  const avatarUrl = user.avatar_url ? `${API_HOST}${user.avatar_url}` : `https://ui-avatars.com/api/?background=random&color=fff&name=${user.name || 'Staff'}`;
 
   return (
     <div className="dashboard-layout">
