@@ -98,6 +98,27 @@ export const authService = {
     } catch (error) {
       throw error;
     }
+  },
+
+  async forgotPassword(email) {
+    try {
+      return await apiClient.post('/auth/forgot_password', { email });
+    } catch (error) {
+      // Always resolve for forgot password to prevent email enumeration
+      return { message: 'If that email is registered, a reset link has been sent.' };
+    }
+  },
+
+  async resetPassword(token, password, passwordConfirmation) {
+    try {
+      return await apiClient.post('/auth/reset_password', {
+        token,
+        password,
+        password_confirmation: passwordConfirmation
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 };
 
