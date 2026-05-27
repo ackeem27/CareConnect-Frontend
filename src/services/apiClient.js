@@ -1,4 +1,5 @@
-const BASE_URL = 'http://localhost:3001/api/v1';
+export const API_HOST = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+const BASE_URL = `${API_HOST}/api/v1`;
 
 const apiClient = {
   async request(endpoint, options = {}) {
