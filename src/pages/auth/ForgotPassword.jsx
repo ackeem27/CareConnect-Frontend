@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Shield, Mail, ArrowLeft, CheckCircle } from 'lucide-react';
+import { authService } from '../../services/dataService';
 import '../../styles/auth/auth.css';
 import toast from 'react-hot-toast';
 
@@ -13,12 +14,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Call the backend password reset endpoint
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001'}/api/v1/auth/forgot_password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
+      await authService.forgotPassword(email);
       // Always show success message to prevent email enumeration
       setSubmitted(true);
       toast.success('If this email exists, a reset link has been sent.');
