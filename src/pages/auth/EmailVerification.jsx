@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Heart, Mail, Loader2 } from 'lucide-react';
 import { authService } from '../../services/dataService';
 import '../../styles/auth/auth.css';
 
-const EmailVerification = ({ email, role, onVerified }) => {
+const EmailVerification = ({ email: propEmail, role: propRole, onVerified }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  // Support both standalone route (via location.state) and inline component (via props)
+  const email = propEmail || location.state?.email || '';
+  const role  = propRole  || location.state?.role  || 'patient';
   const [otpCode, setOtpCode] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
