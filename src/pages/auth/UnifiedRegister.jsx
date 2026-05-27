@@ -72,8 +72,8 @@ const UnifiedRegister = () => {
           phone: form.phone,
           date_of_birth: form.dateOfBirth
         });
-        toast.success('Registration successful! Welcome to CareConnect.');
-        navigate('/patient');
+        toast.success('Registration successful! Please check your email for a verification code.');
+        navigate('/verify-email', { state: { email: form.email, role: 'patient' } });
       } else {
         await authService.registerStaff({
           name: `${form.firstName} ${form.lastName}`,
@@ -83,10 +83,8 @@ const UnifiedRegister = () => {
           phone: form.phone,
           role: role
         });
-        toast.success('Registration successful! Please verify your email.');
-        if (role === 'doctor') navigate('/doctor');
-        else if (role === 'receptionist') navigate('/receptionist');
-        else navigate('/');
+        toast.success('Registration successful! Please check your email for a verification code.');
+        navigate('/verify-email', { state: { email: form.email, role: role } });
       }
     } catch (err) {
       setError(err.message || 'Registration failed. Please check your inputs.');
