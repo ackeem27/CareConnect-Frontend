@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Heart, Shield, Eye, EyeOff, Lock, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { authService } from '../../services/dataService';
 import '../../styles/auth/auth.css';
 import toast from 'react-hot-toast';
 
@@ -57,27 +58,11 @@ const ResetPassword = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:3001'}/api/v1/auth/reset_password`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            token,
-            password: form.password,
-            password_confirmation: form.passwordConfirmation,
-          }),
-        }
-      );
-      const data = await response.json();
-      if (response.ok) {
-        setSuccess(true);
-        toast.success('Password reset successfully!');
-      } else {
-        setError(data.error || 'Failed to reset password. The link may have expired.');
-      }
+      await authService.resetPassword(token, form.password, form.passwordConfirmation);
+      setSuccess(true);
+      toast.success('Password reset successfully!');
     } catch (err) {
-      setError('Network error. Please check your connection and try again.');
+      setError(err.message || 'Failed to reset password. The link may have expired.');
     } finally {
       setLoading(false);
     }
