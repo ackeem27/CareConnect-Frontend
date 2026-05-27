@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Users, Calendar, AlertCircle, Activity, Search, Filter,
-  ChevronLeft, ChevronRight, Heart, Bell, LogOut, ShieldCheck,
-  Download, Clock, Database, Wifi, Edit3, Trash2, Server, Settings, Save, X, FlaskConical, UserCheck
+  Heart, Bell, LogOut, ShieldCheck,
+  Clock, Database, Wifi, Edit3, Trash2, Server, Settings, Save, X, FlaskConical, UserCheck
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authService, adminService } from '../services/dataService';
@@ -19,6 +19,7 @@ const AdminDashboard = () => {
   const [roleFilter, setRoleFilter] = useState('all');
   const [editingUser, setEditingUser] = useState(null);
   const [editRole, setEditRole] = useState('');
+  const [editApproved, setEditApproved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [configs, setConfigs] = useState([]);
   const [editingConfig, setEditingConfig] = useState(null);
@@ -46,10 +47,20 @@ const AdminDashboard = () => {
 
   const handleUpdateRole = async (userId) => {
     try {
-      await adminService.updateUser(userId, { role: editRole });
-      toast.success('Role updated successfully');
+      await adminService.updateUser(userId, { role: editRole, approved: editApproved });
+      toast.success('User updated successfully');
       setEditingUser(null); loadData();
     } catch (err) { toast.error(err.message); }
+  };
+
+  const handleToggleApproval = async (userId, approveState) => {
+    try {
+      await adminService.updateUser(userId, { approved: approveState });
+      toast.success(approveState ? 'Staff approved successfully' : 'Staff approval revoked');
+      loadData();
+    } catch (err) {
+      toast.error(err.message || 'Failed to update approval status');
+    }
   };
 
   const handleDeactivate = async (userId) => {
@@ -93,7 +104,7 @@ const AdminDashboard = () => {
   );
 
   const getRoleBadge = (role) => {
-    const labels = { admin: 'Admin', doctor: 'Practitioner', receptionist: 'Receptionist', patient: 'Patient' };
+    const labels = { admin: 'Admin', doctor: 'Practitioner', receptionist: 'Receptionist', patient: 'Patient', lab_technologist: 'Lab Technologist' };
     return <span className={`ad-role-badge role-${role}`}>{labels[role] || role}</span>;
   };
 
@@ -212,6 +223,7 @@ const AdminDashboard = () => {
                   <option value="patient">Patient</option>
                   <option value="doctor">Practitioner</option>
                   <option value="receptionist">Receptionist</option>
+                  <option value="lab_technologist">Lab Technologist</option>
                   <option value="admin">Admin</option>
                 </select>
                 <button className="ad-filter-btn"><Filter size={16} /></button>
@@ -229,10 +241,62 @@ const AdminDashboard = () => {
                     <tr key={u.id}>
                       <td><div className="ad-user-cell"><img src={`https://ui-avatars.com/api/?background=random&color=fff&name=${u.name || u.email}`} alt="" /><span>{u.name || 'Unknown'}</span></div></td>
                       <td className="ad-email-cell">{u.email}</td>
-                      <td>{editingUser === u.id ? <select value={editRole} onChange={e => setEditRole(e.target.value)} className="ad-role-select"><option value="patient">Patient</option><option value="doctor">Practitioner</option><option value="receptionist">Receptionist</option><option value="admin">Admin</option></select> : getRoleBadge(u.role)}</td>
-                      <td><span className={`ad-status-badge ${u.active ? 'active' : 'inactive'}`}><span className="ad-status-dot" /> {u.active ? 'Active' : 'Inactive'}</span></td>
+                      <td>
+                        {editingUser === u.id ? (
+                          <div style={{display:'flex', flexDirection:'column', gap:'6px'}}>
+                            <select value={editRole} onChange={e => setEditRole(e.target.value)} className="ad-role-select" style={{padding:'4px 8px', borderRadius:'6px', border:'1px solid #cbd5e1', fontSize:'13px'}}>
+                              <option value="patient">Patient</option>
+                              <option value="doctor">Practitioner</option>
+                              <option value="receptionist">Receptionist</option>
+                              <option value="lab_technologist">Lab Technologist</option>
+                              <option value="admin">Admin</option>
+                            </select>
+                            {editRole !== 'patient' && (
+                              <label style={{display:'flex', alignItems:'center', gap:'6px', fontSize:'12px', cursor:'pointer', fontWeight:600, color:'#475569'}}>
+                                <input type="checkbox" checked={editApproved} onChange={e => setEditApproved(e.target.checked)} />
+                                Approved Staff
+                              </label>
+                            )}
+                          </div>
+                        ) : getRoleBadge(u.role)}
+                      </td>
+                      <td>
+                        <div style={{display:'flex', flexDirection:'column', gap:'4px'}}>
+                          <span className={`ad-status-badge ${u.active ? 'active' : 'inactive'}`}><span className="ad-status-dot" /> {u.active ? 'Active' : 'Inactive'}</span>
+                          {u.role !== 'patient' && (
+                            <span className={`ad-status-badge ${u.approved ? 'active' : 'inactive'}`} style={{background: u.approved ? '#ecfdf5' : '#fff1f2', color: u.approved ? '#10b981' : '#f43f5e', border: u.approved ? '1px solid #a7f3d0' : '1px solid #fecdd3'}}>
+                              <span className="ad-status-dot" style={{background: u.approved ? '#10b981' : '#f43f5e'}} /> {u.approved ? 'Approved' : 'Pending Review'}
+                            </span>
+                          )}
+                        </div>
+                      </td>
                       <td className="ad-time-cell">{formatTimeAgo(u.last_login_at)}</td>
-                      <td>{editingUser === u.id ? <div className="ad-edit-actions"><button className="ad-save-btn" onClick={() => handleUpdateRole(u.id)}>Save</button><button className="ad-cancel-btn" onClick={() => setEditingUser(null)}>✕</button></div> : <div className="ad-action-dropdown"><button className="ad-action-btn" title="Edit Role" onClick={() => { setEditingUser(u.id); setEditRole(u.role); }}><Edit3 size={14} /></button>{u.active ? <button className="ad-action-btn danger" title="Deactivate" onClick={() => handleDeactivate(u.id)}><Trash2 size={14} /></button> : <button className="ad-action-btn" title="Reactivate" style={{color:'#10b981'}} onClick={() => handleReactivate(u.id)}><UserCheck size={14} /></button>}</div>}</td>
+                      <td>
+                        {editingUser === u.id ? (
+                          <div className="ad-edit-actions">
+                            <button className="ad-save-btn" onClick={() => handleUpdateRole(u.id)}>Save</button>
+                            <button className="ad-cancel-btn" onClick={() => setEditingUser(null)}>✕</button>
+                          </div>
+                        ) : (
+                          <div className="ad-action-dropdown" style={{display:'flex', gap:'4px'}}>
+                            <button className="ad-action-btn" title="Edit User" onClick={() => { setEditingUser(u.id); setEditRole(u.role); setEditApproved(!!u.approved); }}><Edit3 size={14} /></button>
+                            
+                            {u.role !== 'patient' && (
+                              u.approved ? (
+                                <button className="ad-action-btn" title="Revoke Approval" style={{color:'#ef4444'}} onClick={() => handleToggleApproval(u.id, false)}><X size={14} /></button>
+                              ) : (
+                                <button className="ad-action-btn" title="Approve Staff" style={{color:'#10b981'}} onClick={() => handleToggleApproval(u.id, true)}><UserCheck size={14} /></button>
+                              )
+                            )}
+                            
+                            {u.active ? (
+                              <button className="ad-action-btn danger" title="Deactivate" onClick={() => handleDeactivate(u.id)}><Trash2 size={14} /></button>
+                            ) : (
+                              <button className="ad-action-btn" title="Reactivate" style={{color:'#10b981'}} onClick={() => handleReactivate(u.id)}><UserCheck size={14} /></button>
+                            )}
+                          </div>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -323,7 +387,7 @@ const AdminDashboard = () => {
         <div className="ad-footer-grid">
           <div className="ad-footer-brand"><div className="ad-brand"><div className="ad-brand-icon"><Heart color="white" size={14} fill="white" /></div><span>CareConnect</span></div><p>Revolutionizing healthcare access with technology.</p></div>
           <div className="ad-footer-links"><h4>PATIENTS</h4><Link to="/register">Register</Link><Link to="/login">Login</Link></div>
-          <div className="ad-footer-links"><h4>SUPPORT</h4><a href="#">Help Center</a><a href="#">Privacy Policy</a></div>
+          <div className="ad-footer-links"><h4>SUPPORT</h4><Link to="/">Help Center</Link><Link to="/">Privacy Policy</Link></div>
           <div className="ad-footer-links"><h4>STAFF</h4><Link to="/login">Admin Sign In</Link></div>
         </div>
         <div className="ad-footer-bottom">© 2026 CareConnect. All rights reserved.</div>

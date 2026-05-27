@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { CheckCircle, Clock, Calendar, Activity, Heart, Brain, Sparkles, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { CheckCircle, Calendar, Activity, Heart, Brain, Sparkles, AlertTriangle, ShieldCheck } from 'lucide-react';
 import './AppointmentConfirmation.css';
 
 const AppointmentConfirmation = () => {

@@ -8,6 +8,7 @@ import DoctorDashboard from './pages/DoctorDashboard';
 import ReceptionistDashboard from './pages/ReceptionistDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import AppointmentConfirmation from './pages/AppointmentConfirmation';
+import LabDashboard from './pages/LabDashboard';
 
 // Auth Pages
 import UnifiedLogin from './pages/auth/UnifiedLogin';
@@ -52,6 +53,7 @@ function App() {
           <Route path="/doctor" element={<MainDashboardLayout role="doctor"><DoctorDashboard /></MainDashboardLayout>} />
           <Route path="/receptionist" element={<MainDashboardLayout role="receptionist"><ReceptionistDashboard /></MainDashboardLayout>} />
           <Route path="/queue" element={<MainDashboardLayout role="doctor"><AIPriorityQueue /></MainDashboardLayout>} />
+          <Route path="/lab" element={<MainDashboardLayout role="lab_technologist"><LabDashboard /></MainDashboardLayout>} />
           
           {/* Admin */}
           <Route path="/admin" element={<AdminDashboard />} />

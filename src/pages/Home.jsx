@@ -9,11 +9,9 @@ import {
     CalendarCheck, 
     Clock, 
     Shield, 
-    Plus, 
     ChevronRight, 
     BrainCircuit, 
     Lock, 
-    Fingerprint, 
     Sparkles,
     Menu,
     X,
@@ -523,20 +521,20 @@ function Home() {
                         <Link to="/login">Patient Portal</Link>
                         <Link to="/login">Doctor Dashboard</Link>
                         <Link to="/login">Reception Controls</Link>
-                        <a href="#">AI Methodology</a>
+                        <Link to="/ai-evaluation">AI Methodology</Link>
                     </div>
                     <div className="footer-links-group">
                         <h4>SUPPORT</h4>
-                        <a href="#">Help Center</a>
-                        <a href="#">System Status</a>
-                        <a href="#">Privacy Policy</a>
-                        <a href="#">Terms of Service</a>
+                        <Link to="/">Help Center</Link>
+                        <Link to="/">System Status</Link>
+                        <Link to="/">Privacy Policy</Link>
+                        <Link to="/">Terms of Service</Link>
                     </div>
                     <div className="footer-links-group">
                         <h4>STAFF PORTALS</h4>
                         <Link to="/login">System Administration</Link>
                         <Link to="/login">Clinical IT Support</Link>
-                        <a href="#">Documentation</a>
+                        <Link to="/">Documentation</Link>
                     </div>
                 </div>
                 <div className="footer-bottom">

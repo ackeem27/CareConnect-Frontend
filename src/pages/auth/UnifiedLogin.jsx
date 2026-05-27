@@ -44,6 +44,9 @@ const UnifiedLogin = () => {
         case 'admin':
           navigate('/admin');
           break;
+        case 'lab_technologist':
+          navigate('/lab');
+          break;
         default:
           navigate('/');
       }
@@ -118,6 +121,7 @@ const UnifiedLogin = () => {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   className="form-input"
+                  placeholder="password here"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required

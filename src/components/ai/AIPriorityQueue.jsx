@@ -1,15 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
-  Users, 
   AlertCircle, 
   Clock, 
   Zap, 
   Search, 
-  Filter, 
-  Plus, 
-  ChevronLeft, 
   ChevronRight,
-  ShieldAlert,
   Target,
   Activity,
   Trash2,
@@ -24,19 +19,20 @@ const AIPriorityQueue = () => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const loadQueue = async () => {
+  const loadQueue = useCallback(async () => {
     try {
       const data = await appointmentService.fetchQueue();
       setQueue(data);
-      if (data.length > 0 && !selectedPatient) {
-        setSelectedPatient(data[0]);
-      }
+      setSelectedPatient((current) => {
+        if (data.length === 0) return null;
+        return current ? data.find((appointment) => appointment.id === current.id) || data[0] : data[0];
+      });
     } catch (err) {
       console.error(err);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const handleRemovePatient = (e, id) => {
     e.stopPropagation();
@@ -113,7 +109,7 @@ const AIPriorityQueue = () => {
     loadQueue();
     const interval = setInterval(loadQueue, 2000);
     return () => clearInterval(interval);
-  }, []);
+  }, [loadQueue]);
 
   const getAge = (dob) => {
     if (!dob) return 'N/A';
@@ -210,7 +206,7 @@ const AIPriorityQueue = () => {
             </thead>
             <tbody>
               {isLoading && queue.length === 0 ? (
-                <tr><td colSpan={6} style={{padding:40}}><div className="skeleton-loader" style={{height:'40px', width:'100%', borderRadius:'8px', background:'#f1f5f9', animation:'pulse 1.5s infinite'}}></div></td></tr>
+                <tr><td colSpan={7} style={{padding:40}}><div className="skeleton-loader" style={{height:'40px', width:'100%', borderRadius:'8px', background:'#f1f5f9', animation:'pulse 1.5s infinite'}}></div></td></tr>
               ) : queue.map((appt, idx) => (
                 <tr key={appt.id} className={selectedPatient?.id === appt.id ? 'active-row' : ''} onClick={() => setSelectedPatient(appt)}>
                   <td className="rank-cell">#{idx + 1}</td>
@@ -253,7 +249,7 @@ const AIPriorityQueue = () => {
             </tbody>
           </table>
           <div className="table-footer">
-            <div className="footer-info">Showing {queue.length} of {queue.length + 12} patients in active queue</div>
+            <div className="footer-info">Showing {queue.length} of {queue.length} patients in active queue</div>
             <div className="pagination">
                 <button className="pag-btn">Previous</button>
                 <button className="pag-btn primary">Next Page</button>

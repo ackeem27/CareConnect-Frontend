@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Activity, 
   Calendar, 
@@ -18,7 +18,7 @@ import {
   X
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { authService, appointmentService } from '../services/dataService';
+import { authService, appointmentService, labService } from '../services/dataService';
 
 import '../styles/DoctorDashboard.css';
 
@@ -30,6 +30,14 @@ const DoctorDashboard = () => {
   const [statusLoading, setStatusLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [viewHistoryModal, setViewHistoryModal] = useState(null); // stores the history record to view
+  const [showLabModal, setShowLabModal] = useState(false);
+  const [labTests, setLabTests] = useState('');
+  const [labLoading, setLabLoading] = useState(false);
+  const [standbyQueue, setStandbyQueue] = useState([]);
+  const [showStandbyPanel, setShowStandbyPanel] = useState(false);
+  const selectedPatientId = selectedPatient?.id;
+  const selectedPatientDiagnosis = selectedPatient?.diagnosis || '';
+  const selectedPatientNotes = selectedPatient?.notes || '';
 
   // FR22: Structured diagnosis form state
   const [diagnosisForm, setDiagnosisForm] = useState({
@@ -40,7 +48,7 @@ const DoctorDashboard = () => {
     follow_up: ''
   });
 
-  const loadQueue = async (showLoading = false) => {
+  const loadQueue = useCallback(async (showLoading = false) => {
     if (showLoading) setStatusLoading(true);
     try {
       const data = await appointmentService.fetchQueue();
@@ -56,6 +64,49 @@ const DoctorDashboard = () => {
     } finally {
       if (showLoading) setStatusLoading(false);
     }
+  }, []);
+
+  // Recall patient from lab
+  const handleRecallFromLab = async (appointmentId) => {
+    try {
+      await labService.recallFromLab(appointmentId);
+      toast.success('Patient recalled from laboratory.');
+      loadStandbyQueue();
+      loadQueue();
+    } catch (err) {
+      toast.error(err.message || 'Failed to recall patient.');
+    }
+  };
+
+  // Load standby queue (patients sent to lab)
+  const loadStandbyQueue = useCallback(async () => {
+    try {
+      const data = await labService.fetchStandbyQueue();
+      setStandbyQueue(data);
+    } catch (e) {
+      console.error('Failed to load standby queue:', e);
+    }
+  }, []);
+
+  // Lab Test Request
+  const handleRequestLab = async () => {
+    if (!selectedPatient || !labTests.trim()) {
+      toast.error('Please specify the lab tests to request.');
+      return;
+    }
+    setLabLoading(true);
+    try {
+      await labService.requestLabTests(selectedPatient.id, labTests);
+      toast.success('Patient sent to pathology laboratory.');
+      setShowLabModal(false);
+      setLabTests('');
+      loadQueue();
+      loadStandbyQueue();
+    } catch (err) {
+      toast.error(err.message || 'Failed to request lab tests.');
+    } finally {
+      setLabLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -63,22 +114,26 @@ const DoctorDashboard = () => {
     setUser(currentUser);
     
     loadQueue(true);
-    const interval = setInterval(() => loadQueue(false), 2000);
+    loadStandbyQueue();
+    const interval = setInterval(() => {
+      loadQueue(false);
+      loadStandbyQueue();
+    }, 2000);
     return () => clearInterval(interval);
-  }, []);
+  }, [loadQueue, loadStandbyQueue]);
 
   // Reset form when patient changes
   useEffect(() => {
-    if (selectedPatient) {
+    if (selectedPatientId) {
       setDiagnosisForm({
-        diagnosis: selectedPatient.diagnosis || '',
+        diagnosis: selectedPatientDiagnosis,
         treatment_plan: '',
         prescriptions: '',
-        notes: selectedPatient.notes || '',
+        notes: selectedPatientNotes,
         follow_up: ''
       });
     }
-  }, [selectedPatient?.id]);
+  }, [selectedPatientId, selectedPatientDiagnosis, selectedPatientNotes]);
 
   const handleUpdateStatus = async (status) => {
     if (!selectedPatient) return;
@@ -160,12 +215,67 @@ const DoctorDashboard = () => {
     return Math.floor((Date.now() - dob.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
   };
 
+  const hasCompletedLab = (appointment) => {
+    return appointment?.lab_status === 'completed' || Boolean(appointment?.lab_results);
+  };
+
   const vitals = getPatientVitals(selectedPatient);
 
   return (
     <div className="dashboard-page-content">
+      {/* Lab Standby Queue Toggle */}
+      {standbyQueue.length > 0 && (
+        <div style={{
+          background: '#fffbeb',
+          border: '1.5px solid #fde68a',
+          borderRadius: '12px',
+          padding: '16px',
+          marginBottom: '20px',
+          fontFamily: "'Inter', sans-serif"
+        }}>
+          <div 
+            style={{display:'flex', justifyContent:'space-between', alignItems:'center', cursor:'pointer'}}
+            onClick={() => setShowStandbyPanel(!showStandbyPanel)}
+          >
+            <h3 style={{margin:0, fontSize:'14px', fontWeight:700, color:'#92400e', display:'flex', alignItems:'center', gap:'8px'}}>
+              <FlaskConical size={16} /> Lab Standby Queue ({standbyQueue.length})
+            </h3>
+            <span style={{fontSize:'12px', color:'#b45309', fontWeight:600}}>{showStandbyPanel ? 'Hide' : 'Show'}</span>
+          </div>
+          {showStandbyPanel && (
+            <div style={{marginTop:'12px', display:'flex', flexDirection:'row', flexWrap:'wrap', gap:'8px'}}>
+              {standbyQueue.map(appt => (
+                <div key={appt.id} style={{
+                  display:'flex', justifyContent:'space-between', alignItems:'center', gap:'16px',
+                  background:'white', padding:'10px 14px', borderRadius:'8px', border:'1px solid #fde68a'
+                }}>
+                  <div>
+                    <span style={{fontWeight:600, fontSize:'13px', color:'#1e293b'}}>{appt.patient?.name}</span>
+                    <span className={hasCompletedLab(appt) ? 'lab-complete-label' : 'lab-pending-label'}>
+                      {hasCompletedLab(appt) ? 'Lab completed' : 'Sent to lab'}
+                    </span>
+                    {appt.lab_tests && (
+                      <div style={{fontSize:'11px', color:'#64748b', marginTop:'3px'}}>
+                        Tests: {appt.lab_tests}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => handleRecallFromLab(appt.id)}
+                    style={{
+                      background:'#f59e0b', color:'white', border:'none', padding:'6px 12px',
+                      borderRadius:'6px', fontSize:'12px', fontWeight:700, cursor:'pointer'
+                    }}
+                  >
+                    Recall to Consultation
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
       <div className="dashboard-grid-main">
-        <>
             {/* Left Pillar: Schedule */}
             <div className="schedule-column">
               <div className="schedule-header">
@@ -194,6 +304,11 @@ const DoctorDashboard = () => {
                         <div className="tl-info">
                           <h4>{appt.patient?.name}</h4>
                           <p>{Array.isArray(appt.symptoms) ? appt.symptoms[0] : appt.symptoms}</p>
+                          {hasCompletedLab(appt) && (
+                            <span className="lab-complete-label inline">
+                              <CheckCircle size={11} /> Lab completed
+                            </span>
+                          )}
                         </div>
                         <div className="tl-status">
                           <span className={`urgency-badge-sm ${getUrgencyClass(appt.priority_level)}`}>
@@ -221,7 +336,14 @@ const DoctorDashboard = () => {
                         <img src={`https://ui-avatars.com/api/?background=random&color=fff&name=${selectedPatient.patient?.name}`} alt="" className="hero-avatar-lg" />
                         <div className="hero-text">
                             <h1>{selectedPatient.patient?.name}</h1>
-                            <div className="hero-meta">{getPatientAge(selectedPatient)} Years • PT-{selectedPatient.id} <Activity size={12} /> <Stethoscope size={12} /></div>
+                            <div className="hero-meta">
+                              {getPatientAge(selectedPatient)} Years • PT-{selectedPatient.id} <Activity size={12} /> <Stethoscope size={12} />
+                              {hasCompletedLab(selectedPatient) && (
+                                <span className="lab-complete-label inline">
+                                  <CheckCircle size={11} /> Lab completed
+                                </span>
+                              )}
+                            </div>
                             <div className="hero-reason-box">
                                 <Activity size={18} color="#3b82f6" />
                                 <span>{Array.isArray(selectedPatient.symptoms) ? selectedPatient.symptoms.join(', ') : selectedPatient.symptoms}</span>
@@ -347,9 +469,9 @@ const DoctorDashboard = () => {
                         </div>
 
                         <div className="clinical-action-list">
-                            <div className="card-title-row" style={{marginBottom: '8px'}}>Clinical Utilities</div>
-                            <button className="action-item-btn" onClick={() => toast.success('Lab tests requested successfully. Awaiting pathology.')}><FlaskConical size={18} color="#3b82f6" /> Request Lab Tests</button>
-                            <button className="action-item-btn" onClick={() => toast.success('Imaging order placed. Radiology notified.')}><ImageIcon size={18} color="#3b82f6" /> Order Imaging</button>
+                             <div className="card-title-row" style={{marginBottom: '8px'}}>Clinical Utilities</div>
+                             <button className="action-item-btn" onClick={() => setShowLabModal(true)}><FlaskConical size={18} color="#3b82f6" /> Request Lab Tests</button>
+                             <button className="action-item-btn" onClick={() => toast.success('Imaging order placed. Radiology notified.')}><ImageIcon size={18} color="#3b82f6" /> Order Imaging</button>
                             <button className="action-item-btn" onClick={() => toast.success('Specialist referral drafted. Pending review.')}><UserPlus size={18} color="#3b82f6" /> Refer to Specialist</button>
                         </div>
                       </div>
@@ -404,6 +526,21 @@ const DoctorDashboard = () => {
                                 placeholder="Additional clinical notes, observations, and follow-up instructions..."
                                 value={diagnosisForm.notes}
                                 onChange={(e) => setDiagnosisForm(f => ({...f, notes: e.target.value}))}
+                                style={{
+                                  width: '100%',
+                                  minHeight: '100px',
+                                  padding: '12px',
+                                  border: '1.5px solid #e2e8f0',
+                                  borderRadius: '10px',
+                                  fontSize: '13px',
+                                  fontFamily: 'inherit',
+                                  resize: 'vertical',
+                                  boxSizing: 'border-box',
+                                  outline: 'none',
+                                  background: '#f8fafc',
+                                  transition: 'border-color 0.2s',
+                                  marginBottom: '12px'
+                                }}
                             />
                             <div className="notes-card-footer">
                                 <button className="btn-ghost" onClick={() => setDiagnosisForm({ diagnosis: '', treatment_plan: '', prescriptions: '', notes: '', follow_up: '' })}>Clear</button>
@@ -467,9 +604,49 @@ const DoctorDashboard = () => {
                 </div>
               </div>
             )}
-            
-          </>
         </div>
+
+      {/* Lab Test Request Modal */}
+      {showLabModal && (
+        <div className="modal-overlay" style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'rgba(15, 23, 42, 0.4)', backdropFilter:'blur(4px)', zIndex:999, display:'flex', alignItems:'center', justifyContent:'center'}}>
+          <div className="modal-content" style={{background:'white', padding:'28px', borderRadius:'16px', width:'480px', boxShadow:'0 20px 60px rgba(0,0,0,0.15)', fontFamily:"'Inter', sans-serif"}}>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px'}}>
+              <h3 style={{margin:0, fontSize:'18px', fontWeight:700, display:'flex', alignItems:'center', gap:'8px', color:'#0f172a'}}>
+                <FlaskConical size={20} color="#3b82f6" /> Request Lab Tests
+              </h3>
+              <button onClick={() => setShowLabModal(false)} style={{background:'none', border:'none', cursor:'pointer'}}><X size={20} color="#64748b" /></button>
+            </div>
+            <p style={{fontSize:'13px', color:'#64748b', marginBottom:'16px', lineHeight:'1.5'}}>
+              Requesting pathology lab tests for <strong>{selectedPatient?.patient?.name}</strong>. The patient will be moved to the standby queue and a lab technologist will process the request.
+            </p>
+            <div style={{marginBottom:'16px'}}>
+              <label style={{display:'block', fontSize:'12px', fontWeight:700, color:'#475569', marginBottom:'6px', textTransform:'uppercase', letterSpacing:'0.05em'}}>Lab Tests Required *</label>
+              <textarea
+                value={labTests}
+                onChange={(e) => setLabTests(e.target.value)}
+                placeholder="e.g. Full blood count, Lipid panel, Kidney function test, Blood glucose..."
+                style={{width:'100%', minHeight:'100px', padding:'12px', border:'1.5px solid #e2e8f0', borderRadius:'10px', fontSize:'13px', fontFamily:'inherit', resize:'vertical', boxSizing:'border-box', outline:'none', background:'#f8fafc'}}
+              />
+            </div>
+            <div style={{display:'flex', justifyContent:'flex-end', gap:'10px'}}>
+              <button onClick={() => setShowLabModal(false)} style={{padding:'10px 18px', borderRadius:'8px', border:'1px solid #e2e8f0', background:'white', fontSize:'13px', fontWeight:600, cursor:'pointer', color:'#475569'}}>Cancel</button>
+              <button 
+                onClick={handleRequestLab} 
+                disabled={labLoading}
+                style={{
+                  padding:'10px 18px', borderRadius:'8px', border:'none',
+                  background: labLoading ? '#94a3b8' : '#3b82f6', color:'white',
+                  fontSize:'13px', fontWeight:700, cursor: labLoading ? 'not-allowed' : 'pointer',
+                  display:'flex', alignItems:'center', gap:'6px',
+                  boxShadow:'0 4px 12px rgba(59, 130, 246, 0.2)'
+                }}
+              >
+                {labLoading ? 'Sending...' : 'Send to Lab'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

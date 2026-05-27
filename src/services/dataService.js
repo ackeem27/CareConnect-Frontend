@@ -1,4 +1,4 @@
-import apiClient from './apiClient';
+import apiClient, { API_HOST } from './apiClient';
 
 const STORAGE_KEYS = {
   TOKEN: 'careconnect_token',
@@ -18,7 +18,9 @@ export const authService = {
         email: data.email,
         role: data.role,
         name: data.name,
-        email_verified: data.email_verified
+        email_verified: data.email_verified,
+        approved: data.approved,
+        avatar_url: data.avatar_url
       };
       
       localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
@@ -119,6 +121,28 @@ export const authService = {
     } catch (error) {
       throw error;
     }
+  },
+
+  async updateProfile(formData) {
+    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+    const response = await fetch(`${API_HOST}/api/v1/users/update_profile`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.errors ? data.errors.join(', ') : data.error || 'Failed to update profile');
+    }
+    // Update local storage with new user data
+    if (data.user) {
+      const currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || '{}');
+      const updatedUser = { ...currentUser, ...data.user };
+      localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(updatedUser));
+    }
+    return data;
   }
 };
 
@@ -420,6 +444,50 @@ export const aiEvaluationService = {
       });
     } catch (error) {
       throw error;
+    }
+  }
+};
+
+export const labService = {
+  async requestLabTests(appointmentId, tests) {
+    try {
+      return await apiClient.post(`/appointments/${appointmentId}/request_lab`, { tests });
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async fetchPendingLabs() {
+    try {
+      return await apiClient.get('/lab_requests/pending');
+    } catch (error) {
+      console.error('Failed to fetch pending labs:', error);
+      return [];
+    }
+  },
+
+  async submitLabResults(labId, results) {
+    try {
+      return await apiClient.post(`/lab_requests/${labId}/submit_results`, { results });
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async recallFromLab(appointmentId) {
+    try {
+      return await apiClient.post(`/appointments/${appointmentId}/recall_from_lab`);
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async fetchStandbyQueue() {
+    try {
+      return await apiClient.get('/appointments/standby');
+    } catch (error) {
+      console.error('Failed to fetch standby queue:', error);
+      return [];
     }
   }
 };

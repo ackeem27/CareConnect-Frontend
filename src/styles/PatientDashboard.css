@@ -105,6 +105,40 @@
   border-radius: 50%;
   border: 2px solid white;
   box-shadow: var(--shadow-sm);
+  object-fit: cover;
+}
+
+.pd-avatar-button {
+  position: relative;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pd-avatar-button:hover .pd-avatar {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18), var(--shadow-sm);
+}
+
+.pd-avatar-edit-dot {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pd-signout {
@@ -565,17 +599,242 @@
   letter-spacing: 0.05em;
 }
 
-.pd-footer-links a {
+.pd-footer-links a,
+.pd-footer-links button {
   display: block;
   color: var(--text-muted);
   text-decoration: none;
   font-size: 0.85rem;
   margin-bottom: 10px;
   transition: color 0.2s;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
 }
 
-.pd-footer-links a:hover {
+.pd-footer-links a:hover,
+.pd-footer-links button:hover {
   color: var(--primary);
+}
+
+/* Profile editor */
+.pd-profile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.pd-profile-modal {
+  width: 100%;
+  max-width: 460px;
+  background: white;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.22);
+  animation: pdScaleIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pd-profile-modal-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 22px;
+}
+
+.pd-profile-modal-header h3 {
+  margin: 0 0 4px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.pd-profile-modal-header p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.pd-profile-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f5f9;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.pd-profile-close:hover {
+  background: #e2e8f0;
+  color: var(--text-main);
+}
+
+.pd-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.pd-profile-avatar-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.pd-profile-avatar-upload span {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.pd-profile-avatar-preview {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  padding: 4px;
+  background: white;
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+.pd-profile-avatar-preview img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.pd-profile-camera {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 3px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pd-profile-camera:hover {
+  background: var(--primary-dark);
+  transform: scale(1.06);
+}
+
+.pd-profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pd-profile-field span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.pd-profile-field input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font: inherit;
+  color: var(--text-main);
+  background: #f8fafc;
+  outline: none;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.pd-profile-field input:focus {
+  background: white;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.pd-profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.pd-profile-actions button {
+  min-height: 44px;
+  border-radius: 12px;
+  padding: 0 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pd-profile-cancel {
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.pd-profile-cancel:hover {
+  background: #e2e8f0;
+  color: var(--text-main);
+}
+
+.pd-profile-submit {
+  border: none;
+  color: white;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pd-profile-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.28);
+}
+
+.pd-profile-submit:disabled {
+  background: #cbd5e1;
+  color: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.pd-spin {
+  animation: pdSpin 1s linear infinite;
 }
 
 /* Utils */
@@ -599,6 +858,16 @@
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pdScaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pdSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 /* Card shadow: subtle depth effect */
 /* Header layout improvements */

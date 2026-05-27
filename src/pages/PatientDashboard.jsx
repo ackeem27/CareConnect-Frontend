@@ -13,10 +13,18 @@ import {
   Stethoscope,
   Pill,
   Heart,
-  FileText
+  FileText,
+  Camera,
+  Loader2,
+  Lock,
+  Phone,
+  User as UserIcon,
+  X
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService, appointmentService, notificationService } from '../services/dataService';
+import { API_HOST } from '../services/apiClient';
+import toast from 'react-hot-toast';
 import '../styles/PatientDashboard.css';
 
 const PatientDashboard = () => {
@@ -24,8 +32,17 @@ const PatientDashboard = () => {
   const [user, setUser] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [notifications, setNotifications] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [expandedApptId, setExpandedApptId] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    name: '',
+    phone: '',
+    password: '',
+    passwordConfirmation: ''
+  });
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [updatingProfile, setUpdatingProfile] = useState(false);
 
   useEffect(() => {
     const currentUser = authService.getCurrentUser();
@@ -34,6 +51,12 @@ const PatientDashboard = () => {
       return;
     }
     setUser(currentUser);
+    setProfileForm({
+      name: currentUser.name || '',
+      phone: currentUser.phone || '',
+      password: '',
+      passwordConfirmation: ''
+    });
     
     const loadData = async () => {
       try {
@@ -45,8 +68,6 @@ const PatientDashboard = () => {
         setNotifications(notifData.notifications || []);
       } catch (err) {
         console.error('Error loading patient data:', err);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -56,6 +77,63 @@ const PatientDashboard = () => {
   const handleSignOut = () => {
     authService.logout();
     navigate('/');
+  };
+
+  const getAvatarUrl = (profileUser = user) => {
+    if (avatarPreview) return avatarPreview;
+    if (profileUser?.avatar_url) return `${API_HOST}${profileUser.avatar_url}`;
+    return `https://ui-avatars.com/api/?background=random&color=fff&name=${encodeURIComponent(profileUser?.name || 'Patient')}`;
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setAvatarFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => setAvatarPreview(reader.result);
+    reader.readAsDataURL(file);
+  };
+
+  const handleProfileSave = async (e) => {
+    e.preventDefault();
+
+    if (profileForm.password && profileForm.password !== profileForm.passwordConfirmation) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    setUpdatingProfile(true);
+    try {
+      const formData = new FormData();
+      formData.append('user[name]', profileForm.name);
+      formData.append('user[phone]', profileForm.phone || '');
+      if (profileForm.password) {
+        formData.append('user[password]', profileForm.password);
+        formData.append('user[password_confirmation]', profileForm.passwordConfirmation);
+      }
+      if (avatarFile) {
+        formData.append('user[avatar]', avatarFile);
+      }
+
+      await authService.updateProfile(formData);
+      const updatedUser = authService.getCurrentUser();
+      setUser(updatedUser);
+      setProfileForm({
+        name: updatedUser?.name || '',
+        phone: updatedUser?.phone || '',
+        password: '',
+        passwordConfirmation: ''
+      });
+      setAvatarFile(null);
+      setAvatarPreview(null);
+      setShowProfileModal(false);
+      toast.success('Profile updated successfully');
+    } catch (err) {
+      toast.error(err.message || 'Failed to update profile');
+    } finally {
+      setUpdatingProfile(false);
+    }
   };
 
   const getAlertIcon = (title) => {
@@ -86,7 +164,17 @@ const PatientDashboard = () => {
             <Bell size={20} />
             <span className="pd-notif-dot"></span>
           </button>
-          <img src={`https://ui-avatars.com/api/?background=random&color=fff&name=${user.name}`} alt="Profile" className="pd-avatar" />
+          <button
+            type="button"
+            className="pd-avatar-button"
+            onClick={() => setShowProfileModal(true)}
+            title="Edit profile"
+          >
+            <img src={getAvatarUrl()} alt="Profile" className="pd-avatar" />
+            <span className="pd-avatar-edit-dot">
+              <Camera size={12} />
+            </span>
+          </button>
           <button className="pd-signout" onClick={handleSignOut}>
             <LogOut size={16} /> Sign Out
           </button>
@@ -360,22 +448,22 @@ const PatientDashboard = () => {
             
             <div className="pd-footer-links">
               <h4>PATIENTS</h4>
-              <a href="#">Register</a>
-              <a href="#">Login</a>
-              <a href="#">My Dashboard</a>
+              <button type="button">Register</button>
+              <button type="button">Login</button>
+              <button type="button">My Dashboard</button>
             </div>
             
             <div className="pd-footer-links">
               <h4>SUPPORT</h4>
-              <a href="#">Help Center</a>
-              <a href="#">Privacy Policy</a>
-              <a href="#">Terms of Service</a>
+              <button type="button">Help Center</button>
+              <button type="button">Privacy Policy</button>
+              <button type="button">Terms of Service</button>
             </div>
             
             <div className="pd-footer-links">
               <h4>STAFF</h4>
-              <a href="#">Admin Sign In</a>
-              <a href="#">System Status</a>
+              <button type="button">Admin Sign In</button>
+              <button type="button">System Status</button>
             </div>
           </div>
           
@@ -384,6 +472,105 @@ const PatientDashboard = () => {
           </div>
         </div>
       </footer>
+
+      {showProfileModal && (
+        <div className="pd-profile-overlay" onClick={() => setShowProfileModal(false)}>
+          <div className="pd-profile-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="pd-profile-modal-header">
+              <div>
+                <h3>Edit Profile</h3>
+                <p>Update your patient details and profile picture.</p>
+              </div>
+              <button
+                type="button"
+                className="pd-profile-close"
+                onClick={() => setShowProfileModal(false)}
+                aria-label="Close profile editor"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form className="pd-profile-form" onSubmit={handleProfileSave}>
+              <div className="pd-profile-avatar-upload">
+                <div className="pd-profile-avatar-preview">
+                  <img src={getAvatarUrl()} alt="Profile preview" />
+                  <label htmlFor="patient-avatar-input" className="pd-profile-camera">
+                    <Camera size={14} color="white" />
+                  </label>
+                </div>
+                <input
+                  id="patient-avatar-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  style={{ display: 'none' }}
+                />
+                <span>Click the camera to upload a new picture</span>
+              </div>
+
+              <label className="pd-profile-field">
+                <span><UserIcon size={14} /> Full Name</span>
+                <input
+                  type="text"
+                  value={profileForm.name}
+                  onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                  required
+                />
+              </label>
+
+              <label className="pd-profile-field">
+                <span><Phone size={14} /> Phone Number</span>
+                <input
+                  type="tel"
+                  value={profileForm.phone}
+                  onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                />
+              </label>
+
+              <label className="pd-profile-field">
+                <span><Lock size={14} /> Change Password</span>
+                <input
+                  type="password"
+                  placeholder="Optional new password"
+                  value={profileForm.password}
+                  onChange={(e) => setProfileForm({ ...profileForm, password: e.target.value })}
+                />
+              </label>
+
+              <label className="pd-profile-field">
+                <span><Lock size={14} /> Confirm Password</span>
+                <input
+                  type="password"
+                  placeholder="Confirm new password"
+                  value={profileForm.passwordConfirmation}
+                  onChange={(e) => setProfileForm({ ...profileForm, passwordConfirmation: e.target.value })}
+                />
+              </label>
+
+              <div className="pd-profile-actions">
+                <button
+                  type="button"
+                  className="pd-profile-cancel"
+                  onClick={() => setShowProfileModal(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="pd-profile-submit" disabled={updatingProfile}>
+                  {updatingProfile ? (
+                    <>
+                      <Loader2 className="pd-spin" size={16} />
+                      Saving...
+                    </>
+                  ) : (
+                    'Save Changes'
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
