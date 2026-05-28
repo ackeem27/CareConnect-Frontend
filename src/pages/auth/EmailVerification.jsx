@@ -62,7 +62,8 @@ const EmailVerification = ({ email: propEmail, role: propRole, onVerified }) => 
           patient: '/patient',
           doctor: '/doctor',
           receptionist: '/receptionist',
-          admin: '/admin'
+          admin: '/admin',
+          lab_technologist: '/lab'
         };
         navigate(routes[role] || '/');
       }
