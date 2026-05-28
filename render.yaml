@@ -6,7 +6,7 @@ services:
     staticPublishPath: ./build
     envVars:
       - key: REACT_APP_API_URL
-        value: https://careconnect-backend.onrender.com
+        value: https://careconnect-backend-j2xn.onrender.com
       - key: NODE_VERSION
         value: 20
     routes:
