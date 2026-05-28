@@ -124,25 +124,21 @@ export const authService = {
   },
 
   async updateProfile(formData) {
-    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-    const response = await fetch(`${API_HOST}/api/v1/users/update_profile`, {
-      method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      body: formData
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.errors ? data.errors.join(', ') : data.error || 'Failed to update profile');
+    try {
+      const data = await apiClient.request('/users/update_profile', {
+        method: 'PATCH',
+        body: formData
+      });
+      // Update local storage with new user data
+      if (data && data.user) {
+        const currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || '{}');
+        const updatedUser = { ...currentUser, ...data.user };
+        localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(updatedUser));
+      }
+      return data;
+    } catch (error) {
+      throw error;
     }
-    // Update local storage with new user data
-    if (data.user) {
-      const currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || '{}');
-      const updatedUser = { ...currentUser, ...data.user };
-      localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(updatedUser));
-    }
-    return data;
   }
 };
 

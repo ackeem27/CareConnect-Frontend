@@ -6,9 +6,14 @@ const apiClient = {
     const token = localStorage.getItem('careconnect_token');
     
     const headers = {
-      'Content-Type': 'application/json',
       ...options.headers,
     };
+
+    if (typeof FormData !== 'undefined' && options.body instanceof FormData) {
+      // Allow browser to set content-type with boundary automatically
+    } else {
+      headers['Content-Type'] = 'application/json';
+    }
 
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
@@ -26,10 +31,40 @@ const apiClient = {
         return true;
       }
 
-      const data = await response.json();
+      const contentType = response.headers.get('content-type');
+      let data = null;
+      let isJson = contentType && contentType.includes('application/json');
+
+      if (isJson) {
+        try {
+          data = await response.json();
+        } catch (e) {
+          isJson = false;
+        }
+      }
 
       if (!response.ok) {
-        throw new Error(data.errors ? data.errors.join(', ') : data.error || 'Something went wrong');
+        let errorMessage = 'Something went wrong';
+        if (isJson && data) {
+          errorMessage = data.errors ? data.errors.join(', ') : data.error || errorMessage;
+        } else {
+          try {
+            const text = await response.text();
+            errorMessage = text || response.statusText || errorMessage;
+          } catch (_) {
+            errorMessage = response.statusText || errorMessage;
+          }
+        }
+        throw new Error(errorMessage);
+      }
+
+      if (!isJson) {
+        try {
+          const text = await response.text();
+          return text;
+        } catch (_) {
+          return null;
+        }
       }
 
       return data;
