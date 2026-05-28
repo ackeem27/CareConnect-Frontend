@@ -7,6 +7,8 @@ services:
     envVars:
       - key: REACT_APP_API_URL
         value: https://careconnect-backend.onrender.com
+      - key: NODE_VERSION
+        value: 20
     routes:
       - type: rewrite
         source: /*
