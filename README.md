@@ -11,8 +11,10 @@ This is the React-based frontend for the CareConnect Hospital Management System.
 ### 1. Environment Variables
 Create a `.env` file in this directory and add the following:
 ```env
-REACT_APP_API_URL=http://localhost:3001/api/v1
+REACT_APP_API_URL=http://localhost:3001
 ```
+
+Do not include `/api/v1`; the API client appends that path automatically.
 
 ### 2. Installation
 ```bash
@@ -24,6 +26,21 @@ npm install
 npm start
 ```
 The application will launch at `http://localhost:3000`.
+
+##  Northflank Deployment
+
+Deploy this repository as a Dockerfile service:
+
+- Dockerfile path: `Dockerfile`
+- Build context: repository root
+
+Set the backend host only:
+
+```env
+REACT_APP_API_URL=https://<your-backend-public-url>
+```
+
+Do not include `/api/v1`; the API client appends that path automatically.
 
 ##  Key Features
 - **Unified Auth Portal:** Role-based login and registration for Patients and Staff.
