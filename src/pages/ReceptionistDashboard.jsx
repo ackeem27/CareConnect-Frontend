@@ -246,6 +246,12 @@ function SchedulePage() {
     return <span className={`rd-priority-badge ${c}`}>{level} ({score})</span>;
   };
 
+  const getDoctorName = (appt) => {
+    const doctor = appt.doctor || appt.time_slot?.doctor;
+    if (doctor?.name) return `Dr. ${doctor.name}`;
+    return appt.doctor_id ? 'Doctor assigned' : 'Unassigned';
+  };
+
   return (
     <div className="rd-schedule-layout">
       <div className="rd-schedule-main">
@@ -303,11 +309,18 @@ function SchedulePage() {
                   <tr key={appt.id}>
                     <td><div className="rd-patient-cell"><img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(appt.patient?.name || 'User')}&background=random&color=fff`} alt="" /><div><span className="rd-patient-name">{appt.patient?.name}</span><span className="rd-patient-sub">{(appt.symptoms||[]).slice(0,2).join(', ')}</span></div></div></td>
                     <td>{appt.scheduled_at ? new Date(appt.scheduled_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : appt.status === 'pending' ? 'Immediate' : '—'}</td>
-                    <td><span className="rd-doctor-tag">{appt.doctor_id ? `Dr. #${appt.doctor_id}` : 'TBD'}</span></td>
+                    <td><span className={`rd-doctor-tag ${appt.doctor_id ? '' : 'unassigned'}`}>{getDoctorName(appt)}</span></td>
                     <td>{getPriorityBadge(appt.priority_level, appt.priority_score)}</td>
                     <td><span className={`rd-status-tag ${appt.status}`}>{appt.status === 'pending' ? 'Walk-In' : appt.status}</span></td>
-                    <td>
-                      {appt.status !== 'pending' && <div style={{display:'flex', gap:'4px'}}><button className="rd-action-btn" onClick={() => setRescheduleData({id: appt.id, time: appt.scheduled_at})} style={{fontSize: '11px', padding: '4px 8px', borderRadius: '4px', border: '1px solid #e2e8f0', background: 'white', cursor: 'pointer'}}>Reschedule</button><button className="rd-action-btn" onClick={() => handleCancel(appt.id)} style={{fontSize: '11px', padding: '4px 8px', borderRadius: '4px', border: '1px solid #fee2e2', background: '#fef2f2', color: '#ef4444', cursor: 'pointer'}}>Cancel</button><button onClick={() => handleSwap(appt.id, 'up')} style={{background:'none',border:'none',cursor:'pointer',padding:'2px'}} title="Move Up"><ChevronUp size={14} color="#64748b" /></button><button onClick={() => handleSwap(appt.id, 'down')} style={{background:'none',border:'none',cursor:'pointer',padding:'2px'}} title="Move Down"><ChevronDown size={14} color="#64748b" /></button></div>}
+                    <td className="rd-actions-cell">
+                      {appt.status !== 'pending' && (
+                        <div className="rd-row-actions">
+                          <button className="rd-action-btn" onClick={() => setRescheduleData({id: appt.id, time: appt.scheduled_at})}>Reschedule</button>
+                          <button className="rd-action-btn danger" onClick={() => handleCancel(appt.id)}>Cancel</button>
+                          <button className="rd-icon-action" onClick={() => handleSwap(appt.id, 'up')} title="Move Up"><ChevronUp size={14} /></button>
+                          <button className="rd-icon-action" onClick={() => handleSwap(appt.id, 'down')} title="Move Down"><ChevronDown size={14} /></button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))
@@ -315,11 +328,16 @@ function SchedulePage() {
                 <tr key={appt.id}>
                   <td><div className="rd-patient-cell"><img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(appt.patient?.name || 'User')}&background=random&color=fff`} alt="" /><div><span className="rd-patient-name">{appt.patient?.name}</span><span className="rd-patient-sub">{(appt.symptoms||[]).slice(0,2).join(', ')}</span></div></div></td>
                   <td>{appt.scheduled_at ? new Date(appt.scheduled_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '—'}</td>
-                  <td><span className="rd-doctor-tag">Dr. #{appt.doctor_id || 1}</span></td>
+                  <td><span className={`rd-doctor-tag ${appt.doctor_id ? '' : 'unassigned'}`}>{getDoctorName(appt)}</span></td>
                   <td>{getPriorityBadge(appt.priority_level, appt.priority_score)}</td>
                   <td><span className={`rd-status-tag ${appt.status}`}>{appt.status}</span></td>
-                  <td>
-                    <div style={{display:'flex', gap:'4px'}}><button className="rd-action-btn" onClick={() => setRescheduleData({id: appt.id, time: appt.scheduled_at})} style={{fontSize: '11px', padding: '4px 8px', borderRadius: '4px', border: '1px solid #e2e8f0', background: 'white', cursor: 'pointer'}}>Reschedule</button><button className="rd-action-btn" onClick={() => handleCancel(appt.id)} style={{fontSize: '11px', padding: '4px 8px', borderRadius: '4px', border: '1px solid #fee2e2', background: '#fef2f2', color: '#ef4444', cursor: 'pointer'}}>Cancel</button><button onClick={() => handleSwap(appt.id, 'up')} style={{background:'none',border:'none',cursor:'pointer',padding:'2px'}} title="Move Up"><ChevronUp size={14} color="#64748b" /></button><button onClick={() => handleSwap(appt.id, 'down')} style={{background:'none',border:'none',cursor:'pointer',padding:'2px'}} title="Move Down"><ChevronDown size={14} color="#64748b" /></button></div>
+                  <td className="rd-actions-cell">
+                    <div className="rd-row-actions">
+                      <button className="rd-action-btn" onClick={() => setRescheduleData({id: appt.id, time: appt.scheduled_at})}>Reschedule</button>
+                      <button className="rd-action-btn danger" onClick={() => handleCancel(appt.id)}>Cancel</button>
+                      <button className="rd-icon-action" onClick={() => handleSwap(appt.id, 'up')} title="Move Up"><ChevronUp size={14} /></button>
+                      <button className="rd-icon-action" onClick={() => handleSwap(appt.id, 'down')} title="Move Down"><ChevronDown size={14} /></button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -375,7 +393,7 @@ function SchedulePage() {
               >
                 <option value="">-- Auto Assign Doctor --</option>
                 {doctors.map(d => (
-                  <option key={d.id} value={d.id}>{d.name} (Dr. #{d.id})</option>
+                  <option key={d.id} value={d.id}>Dr. {d.name}</option>
                 ))}
               </select>
             </div>

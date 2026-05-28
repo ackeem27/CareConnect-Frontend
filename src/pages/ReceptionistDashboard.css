@@ -32,26 +32,43 @@
 .rd-priority-badge.routine { background: #f1f5f9; color: #475569; }
 
 /* Daily Schedule */
-.rd-daily-schedule { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 24px; }
+.rd-daily-schedule { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 24px; overflow-x: auto; }
 .rd-schedule-header { display: flex; justify-content: space-between; align-items: center; }
 .rd-schedule-header h3 { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #0f172a; margin: 0; }
 .rd-schedule-controls { display: flex; gap: 8px; }
 .rd-filter-btn, .rd-today-btn { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; font-size: 13px; color: #334155; cursor: pointer; }
 .rd-filter-btn:hover, .rd-today-btn:hover { background: #f8fafc; }
 .rd-schedule-sub { font-size: 13px; color: #64748b; margin: 4px 0 16px; }
-.rd-schedule-table { width: 100%; border-collapse: collapse; }
-.rd-schedule-table th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 600; color: #94a3b8; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; }
-.rd-schedule-table td { padding: 14px 12px; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #334155; }
-.rd-patient-cell { display: flex; align-items: center; gap: 10px; }
-.rd-patient-cell img { width: 34px; height: 34px; border-radius: 50%; }
-.rd-patient-name { display: block; font-weight: 600; font-size: 13px; }
-.rd-patient-sub { display: block; font-size: 11px; color: #94a3b8; text-transform: uppercase; }
-.rd-doctor-tag { padding: 4px 10px; background: #ecfdf5; color: #065f46; border-radius: 6px; font-size: 12px; font-weight: 600; }
+.rd-schedule-table { width: 100%; min-width: 940px; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
+.rd-schedule-table th { text-align: left; padding: 11px 14px; font-size: 11px; font-weight: 800; color: #94a3b8; letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; background: #ffffff; }
+.rd-schedule-table td { height: 72px; padding: 14px; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #334155; vertical-align: middle; }
+.rd-schedule-table th:nth-child(1), .rd-schedule-table td:nth-child(1) { width: 28%; }
+.rd-schedule-table th:nth-child(2), .rd-schedule-table td:nth-child(2) { width: 11%; }
+.rd-schedule-table th:nth-child(3), .rd-schedule-table td:nth-child(3) { width: 17%; }
+.rd-schedule-table th:nth-child(4), .rd-schedule-table td:nth-child(4) { width: 15%; }
+.rd-schedule-table th:nth-child(5), .rd-schedule-table td:nth-child(5) { width: 12%; }
+.rd-schedule-table th:nth-child(6), .rd-schedule-table td:nth-child(6) { width: 17%; text-align: right; }
+.rd-schedule-table tbody tr { transition: background 0.18s ease; }
+.rd-schedule-table tbody tr:hover { background: #f8fafc; }
+.rd-patient-cell { display: grid; grid-template-columns: 36px minmax(0, 1fr); align-items: center; gap: 11px; min-width: 0; }
+.rd-patient-cell img { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; }
+.rd-patient-name { display: block; font-weight: 700; font-size: 13px; color: #0f172a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rd-patient-sub { display: block; font-size: 11px; color: #94a3b8; text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; }
+.rd-doctor-tag { display: inline-flex; align-items: center; min-height: 26px; padding: 4px 10px; background: #ecfdf5; color: #065f46; border-radius: 6px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.rd-doctor-tag.unassigned { background: #f1f5f9; color: #64748b; }
 .rd-status-tag { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
 .rd-status-tag.scheduled, .rd-status-tag.approved { background: #ecfdf5; color: #065f46; }
 .rd-status-tag.pending { background: #eff6ff; color: #1d4ed8; }
 .rd-status-tag.arrived { background: #fef3c7; color: #92400e; }
 .rd-status-tag.in_progress { background: #fef3c7; color: #92400e; }
+.rd-actions-cell { text-align: right; }
+.rd-row-actions { display: inline-flex; align-items: center; justify-content: flex-end; gap: 6px; white-space: nowrap; }
+.rd-action-btn { min-height: 28px; padding: 0 10px; border-radius: 7px; border: 1px solid #e2e8f0; background: #ffffff; color: #334155; font-size: 11px; font-weight: 800; cursor: pointer; }
+.rd-action-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+.rd-action-btn.danger { border-color: #fecaca; background: #fff7f7; color: #dc2626; }
+.rd-action-btn.danger:hover { background: #fef2f2; border-color: #fca5a5; }
+.rd-icon-action { width: 28px; height: 28px; border: 1px solid #e2e8f0; border-radius: 7px; background: #ffffff; color: #64748b; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.rd-icon-action:hover { background: #eff6ff; border-color: #bfdbfe; color: #2563eb; }
 
 /* Right Sidebar */
 .rd-schedule-sidebar { display: flex; flex-direction: column; gap: 16px; }
@@ -171,8 +188,9 @@
 .btn-view-queue { padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 13px; }
 /* ── Premium Walkin Form ── */
 .walkin-form-card-premium {
-  max-width: 900px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   background: white;
   border-radius: 20px;
   overflow: hidden;
@@ -214,12 +232,12 @@
 }
 
 .walkin-form-body-premium {
-  padding: 40px;
+  padding: 40px 48px;
 }
 
 .form-grid-premium {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1.1fr);
   gap: 48px;
   margin-bottom: 40px;
 }
@@ -363,6 +381,7 @@
 }
 
 @media (max-width: 768px) {
+  .walkin-form-body-premium { padding: 28px; }
   .form-grid-premium { grid-template-columns: 1fr; gap: 24px; }
   .severity-grid-premium { grid-template-columns: 1fr; }
 }

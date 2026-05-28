@@ -391,6 +391,62 @@
   transform: translateY(-2px);
 }
 
+.pd-past-visit-card {
+  background: #ffffff;
+  border-left: 4px solid #10b981;
+}
+
+.pd-visit-record-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px;
+  margin: 14px 0;
+}
+
+.pd-record-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.pd-record-value {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.pd-record-notes {
+  white-space: pre-wrap;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px;
+  color: #334155;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.pd-lab-record-box {
+  border-color: #bfdbfe;
+  background: #f8fbff;
+}
+
+.pd-lab-tests {
+  margin: 0;
+  color: #1d4ed8;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
 .pd-appt-avatar {
   width: 48px;
   height: 48px;
@@ -460,6 +516,70 @@
 }
 
 /* Sidebar */
+.pd-notification-panel {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.pd-notification-top {
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.pd-notification-sub {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.pd-notification-filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.pd-notification-filters button {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  min-height: 36px;
+  border-radius: 10px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 10px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.pd-notification-filters button span {
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+}
+
+.pd-notification-filters button.active {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+}
+
 .pd-badge-new {
   background: #ef4444;
   color: white;
@@ -481,11 +601,22 @@
   padding: 16px;
   border-left: 3px solid transparent;
   margin-bottom: 0 !important;
+  position: relative;
+  overflow: hidden;
 }
 
 .pd-alert-card.unread {
   border-left-color: var(--primary);
   background: #f8fafc;
+}
+
+.pd-alert-card.priority-high {
+  border-left-color: #ef4444;
+  background: #fff7f7;
+}
+
+.pd-alert-card.priority-medium {
+  border-left-color: #f59e0b;
 }
 
 .pd-alert-icon {
@@ -499,11 +630,81 @@
   flex-shrink: 0;
 }
 
+.pd-alert-icon.priority-high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.pd-alert-icon.priority-medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.pd-alert-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pd-appt-manage-row {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 14px;
+  margin-top: 2px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.pd-appt-manage-row button {
+  min-height: 34px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-radius: 999px;
+  padding: 0 14px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.pd-appt-manage-row button.danger {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
 .pd-alert-content h4 {
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 2px;
   color: var(--text-main);
+}
+
+.pd-alert-priority {
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 0.58rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pd-alert-priority.high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.pd-alert-priority.medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.pd-alert-priority.normal {
+  background: #e0f2fe;
+  color: #0369a1;
 }
 
 .pd-alert-content p {
@@ -517,6 +718,24 @@
   font-size: 0.7rem;
   color: #94a3b8;
   font-weight: 500;
+}
+
+.pd-alert-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pd-alert-footer button {
+  border: none;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .pd-clear-alerts {
@@ -535,6 +754,22 @@
 .pd-clear-alerts:hover {
   background: #f1f5f9;
   color: var(--text-main);
+}
+
+.pd-clear-alerts.danger {
+  border-color: #fecaca;
+  color: #dc2626;
+}
+
+.pd-clear-alerts.danger:hover {
+  background: #fef2f2;
+}
+
+.pd-notification-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .pd-empty-state-side {
@@ -637,6 +872,17 @@
 .pd-profile-modal {
   width: 100%;
   max-width: 460px;
+  background: white;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.22);
+  animation: pdScaleIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pd-appointment-modal {
+  width: 100%;
+  max-width: 560px;
   background: white;
   border: 1px solid rgba(226, 232, 240, 0.9);
   border-radius: 20px;
@@ -762,7 +1008,9 @@
   color: var(--text-muted);
 }
 
-.pd-profile-field input {
+.pd-profile-field input,
+.pd-profile-field select,
+.pd-profile-field textarea {
   width: 100%;
   border: 1.5px solid var(--border);
   border-radius: 12px;
@@ -775,10 +1023,28 @@
   box-sizing: border-box;
 }
 
-.pd-profile-field input:focus {
+.pd-profile-field textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.pd-profile-field input:focus,
+.pd-profile-field select:focus,
+.pd-profile-field textarea:focus {
   background: white;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.pd-appointment-modal-note {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.45;
 }
 
 .pd-profile-actions {

@@ -13,7 +13,6 @@ import {
   Stethoscope,
   Pill,
   Heart,
-  FileText,
   Camera,
   Loader2,
   Lock,
@@ -31,8 +30,17 @@ const PatientDashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [appointments, setAppointments] = useState([]);
+  const [visitTab, setVisitTab] = useState('upcoming');
   const [notifications, setNotifications] = useState([]);
+  const [notificationFilter, setNotificationFilter] = useState('all');
   const [expandedApptId, setExpandedApptId] = useState(null);
+  const [manageMode, setManageMode] = useState(false);
+  const [editingAppointment, setEditingAppointment] = useState(null);
+  const [appointmentForm, setAppointmentForm] = useState({
+    symptoms: '',
+    severity: 'low',
+    preferred_date: ''
+  });
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileForm, setProfileForm] = useState({
     name: '',
@@ -137,11 +145,136 @@ const PatientDashboard = () => {
   };
 
   const getAlertIcon = (title) => {
-    if (title.toLowerCase().includes('prescription') || title.toLowerCase().includes('pill')) return Pill;
-    if (title.toLowerCase().includes('confirmed') || title.toLowerCase().includes('booked')) return CheckCircle2;
-    if (title.toLowerCase().includes('reminder') || title.toLowerCase().includes('flu')) return AlertCircle;
+    const safeTitle = (title || '').toLowerCase();
+    if (safeTitle.includes('prescription') || safeTitle.includes('pill')) return Pill;
+    if (safeTitle.includes('confirmed') || safeTitle.includes('booked') || safeTitle.includes('approved')) return CheckCircle2;
+    if (safeTitle.includes('reminder') || safeTitle.includes('flu') || safeTitle.includes('priority')) return AlertCircle;
     return Info;
   };
+
+  const getNotificationPriority = (notif) => {
+    const text = `${notif.title || ''} ${notif.message || ''} ${notif.notification_type || ''}`.toLowerCase();
+    if (text.includes('rejected') || text.includes('urgent') || text.includes('high') || text.includes('priority_change') || text.includes('system_alert')) return 'high';
+    if (text.includes('approved') || text.includes('confirmed') || text.includes('schedule') || text.includes('reminder')) return 'medium';
+    return 'normal';
+  };
+
+  const filteredNotifications = notifications
+    .filter((notif) => {
+      const priority = getNotificationPriority(notif);
+      if (notificationFilter === 'unread') return !notif.read;
+      if (notificationFilter === 'important') return priority === 'high' || priority === 'medium';
+      if (notificationFilter === 'schedule') return ['appointment_approved', 'appointment_booked', 'schedule_update'].includes(notif.notification_type);
+      return true;
+    })
+    .sort((a, b) => {
+      const priorityWeight = { high: 3, medium: 2, normal: 1 };
+      const unreadDiff = Number(a.read) - Number(b.read);
+      if (unreadDiff !== 0) return unreadDiff;
+      return priorityWeight[getNotificationPriority(b)] - priorityWeight[getNotificationPriority(a)];
+    });
+
+  const notificationCounts = {
+    all: notifications.length,
+    unread: notifications.filter(n => !n.read).length,
+    important: notifications.filter(n => ['high', 'medium'].includes(getNotificationPriority(n))).length,
+    schedule: notifications.filter(n => ['appointment_approved', 'appointment_booked', 'schedule_update'].includes(n.notification_type)).length
+  };
+
+  const handleMarkNotificationRead = async (id) => {
+    try {
+      await notificationService.markAsRead(id);
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    } catch (err) {
+      toast.error(err.message || 'Failed to update notification');
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    try {
+      await notificationService.markAllRead();
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      toast.success('Notifications marked as read');
+    } catch (err) {
+      toast.error(err.message || 'Failed to mark notifications as read');
+    }
+  };
+
+  const handleClearNotifications = async () => {
+    if (!window.confirm('Clear all notifications?')) return;
+    try {
+      await notificationService.clear();
+      setNotifications([]);
+      toast.success('Notifications cleared');
+    } catch (err) {
+      toast.error(err.message || 'Failed to clear notifications');
+    }
+  };
+
+  const refreshAppointments = async () => {
+    const apptData = await appointmentService.fetchMyAppointments();
+    setAppointments(apptData);
+  };
+
+  const openAppointmentEditor = (appt) => {
+    setEditingAppointment(appt);
+    setAppointmentForm({
+      symptoms: formatSymptoms(appt.symptoms),
+      severity: appt.severity || 'low',
+      preferred_date: appt.preferred_date ? new Date(appt.preferred_date).toISOString().slice(0, 16) : ''
+    });
+  };
+
+  const handleSaveAppointmentChanges = async (e) => {
+    e.preventDefault();
+    if (!editingAppointment) return;
+    if (!appointmentForm.symptoms.trim()) {
+      toast.error('Please describe your symptoms.');
+      return;
+    }
+
+    try {
+      await appointmentService.updateAppointment(editingAppointment.id, {
+        symptoms: appointmentForm.symptoms.split(',').map(item => item.trim()).filter(Boolean),
+        severity: appointmentForm.severity,
+        preferred_date: appointmentForm.preferred_date ? new Date(appointmentForm.preferred_date).toISOString() : null
+      });
+      toast.success('Appointment request updated');
+      setEditingAppointment(null);
+      await refreshAppointments();
+    } catch (err) {
+      toast.error(err.message || 'Failed to update appointment');
+    }
+  };
+
+  const handleCancelAppointment = async (appt) => {
+    if (!window.confirm('Cancel this appointment request?')) return;
+    try {
+      await appointmentService.cancel(appt.id);
+      toast.success('Appointment cancelled');
+      await refreshAppointments();
+    } catch (err) {
+      toast.error(err.message || 'Failed to cancel appointment');
+    }
+  };
+
+  const getVisitDate = (appt) => appt.scheduled_at || appt.updated_at || appt.created_at;
+
+  const formatSymptoms = (symptoms) => {
+    if (Array.isArray(symptoms)) return symptoms.join(', ');
+    return symptoms || 'No symptoms recorded';
+  };
+
+  const getDoctorName = (appt) => {
+    if (appt.doctor?.name) return `Dr. ${appt.doctor.name}`;
+    return appt.doctor_id ? 'Assigned doctor' : 'Not assigned';
+  };
+
+  const hasLabResults = (appt) => appt.lab_status === 'completed' || Boolean(appt.lab_results);
+  const upcomingVisits = appointments.filter(appt => !['completed', 'rejected', 'cancelled'].includes(appt.status));
+  const pastVisits = appointments.filter(appt => ['completed', 'rejected', 'cancelled'].includes(appt.status) || appt.diagnosis || appt.notes);
+  const visibleAppointments = visitTab === 'past' ? pastVisits : upcomingVisits;
+  const activeAppointmentCount = upcomingVisits.length;
 
   if (!user) return null;
 
@@ -186,7 +319,7 @@ const PatientDashboard = () => {
         <header className="pd-header">
           <div className="pd-welcome">
             <h1>Welcome back, {user.name.split(' ')[0]}</h1>
-            <p>You have {appointments.length} appointments scheduled for this week.</p>
+            <p>You have {activeAppointmentCount} active appointment{activeAppointmentCount === 1 ? '' : 's'} in your care timeline.</p>
           </div>
           <div className="pd-header-stats">
             <div className="pd-stat-pill">
@@ -254,18 +387,18 @@ const PatientDashboard = () => {
               {/* My Appointments */}
               <div className="pd-appointments">
                 <div className="pd-section-top">
-                  <h3>My Appointments</h3>
+                  <h3>{visitTab === 'past' ? 'Past Visits' : 'My Appointments'}</h3>
                   <div className="pd-toggle">
-                    <button className="active">Upcoming</button>
-                    <button>Past</button>
+                    <button className={visitTab === 'upcoming' ? 'active' : ''} onClick={() => setVisitTab('upcoming')}>Upcoming</button>
+                    <button className={visitTab === 'past' ? 'active' : ''} onClick={() => setVisitTab('past')}>Past</button>
                   </div>
                 </div>
                 <div className="pd-appt-list">
-                    {appointments.length > 0 ? (
-                      appointments.map((appt) => (
+                    {visibleAppointments.length > 0 ? (
+                      visibleAppointments.map((appt) => (
                         <div 
                           key={appt.id} 
-                          className="pd-appt-card" 
+                          className={`pd-appt-card ${visitTab === 'past' ? 'pd-past-visit-card' : ''}`}
                           style={{ cursor: 'pointer' }}
                           onClick={() => setExpandedApptId(expandedApptId === appt.id ? null : appt.id)}
                         >
@@ -274,18 +407,19 @@ const PatientDashboard = () => {
                           </div>
                           <div className="pd-appt-info">
                             <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              AI Triage: 
+                              {visitTab === 'past' ? (appt.diagnosis || 'Completed Visit') : 'AI Triage:'}
                               <span style={{
                                 color: appt.priority_level === 'HIGH' ? '#dc2626' : appt.priority_level === 'MEDIUM' ? '#d97706' : '#2563eb',
                                 fontWeight: 800
                               }}>
-                                {appt.priority_level}
+                                {visitTab === 'past' ? '' : appt.priority_level}
                               </span>
                             </h4>
-                            <p className="pd-appt-desc">Symptoms: {Array.isArray(appt.symptoms) ? appt.symptoms.join(', ') : appt.symptoms}</p>
+                            <p className="pd-appt-desc">Symptoms: {formatSymptoms(appt.symptoms)}</p>
                             <div className="pd-appt-meta">
-                              <span><CalendarIcon /> {new Date(appt.created_at).toLocaleDateString()}</span>
-                              <span><Clock size={12} /> {new Date(appt.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                              <span><CalendarIcon /> {new Date(getVisitDate(appt)).toLocaleDateString()}</span>
+                              <span><Clock size={12} /> {new Date(getVisitDate(appt)).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                              <span><Stethoscope size={12} /> {getDoctorName(appt)}</span>
                             </div>
                           </div>
                           <div className="pd-appt-right">
@@ -299,14 +433,26 @@ const PatientDashboard = () => {
                               }}
                             />
                           </div>
+
+                          {manageMode && visitTab === 'upcoming' && (
+                            <div className="pd-appt-manage-row" onClick={(e) => e.stopPropagation()}>
+                              <button type="button" onClick={() => openAppointmentEditor(appt)}>Edit Request</button>
+                              <button type="button" onClick={() => openAppointmentEditor(appt)}>Reschedule</button>
+                              <button type="button" className="danger" onClick={() => handleCancelAppointment(appt)}>Cancel</button>
+                            </div>
+                          )}
                           
                           {expandedApptId === appt.id && (
                             <div className="pd-appt-triage-detail" onClick={(e) => e.stopPropagation()} style={{gridColumn: '1 / -1', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #f1f5f9'}}>
                               <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#1e293b', fontWeight: 600, marginBottom: '12px'}}>
-                                <Activity size={16} color="#3b82f6" /> AI Triage Assessment Details
+                                <Activity size={16} color="#3b82f6" /> {visitTab === 'past' ? 'Visit Summary' : 'AI Triage Assessment Details'}
                               </div>
                               
                               <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '16px'}}>
+                                <div style={{background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0'}}>
+                                  <span style={{fontSize: '11px', color: '#64748b', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Doctor</span>
+                                  <span style={{fontSize: '15px', fontWeight: 700, color: '#1e293b'}}>{getDoctorName(appt)}</span>
+                                </div>
                                 <div style={{background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0'}}>
                                   <span style={{fontSize: '11px', color: '#64748b', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Priority Level</span>
                                   <span style={{
@@ -336,6 +482,31 @@ const PatientDashboard = () => {
                                 </p>
                               </div>
 
+                              {visitTab === 'past' && (appt.diagnosis || appt.notes) && (
+                                <div className="pd-visit-record-box">
+                                  {appt.diagnosis && (
+                                    <div>
+                                      <span className="pd-record-label">Diagnosis</span>
+                                      <p className="pd-record-value">{appt.diagnosis}</p>
+                                    </div>
+                                  )}
+                                  {appt.notes && (
+                                    <div>
+                                      <span className="pd-record-label">Doctor Notes & Treatment Plan</span>
+                                      <div className="pd-record-notes">{appt.notes}</div>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+
+                              {hasLabResults(appt) && (
+                                <div className="pd-visit-record-box pd-lab-record-box">
+                                  <span className="pd-record-label">Laboratory Results</span>
+                                  {appt.lab_tests && <p className="pd-lab-tests">Tests: {appt.lab_tests}</p>}
+                                  <div className="pd-record-notes">{appt.lab_results || 'Lab request completed.'}</div>
+                                </div>
+                              )}
+
                               {appt.first_aid_advice && appt.first_aid_advice.length > 0 && (
                                 <div style={{marginTop: '16px'}}>
                                   <span style={{fontSize: '11px', color: '#64748b', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px'}}>First-Aid & Safety Recommendations</span>
@@ -357,36 +528,17 @@ const PatientDashboard = () => {
                             </div>
                           )}
 
-                          {appt.status === 'completed' && (appt.diagnosis || appt.notes) && (
-                            <div className="pd-appt-record" onClick={(e) => e.stopPropagation()} style={{gridColumn: '1 / -1', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #f1f5f9'}}>
-                              <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#1e293b', fontWeight: 600, marginBottom: '8px'}}>
-                                <FileText size={16} color="#3b82f6" /> Medical Record
-                              </div>
-                              {appt.diagnosis && (
-                                <div style={{marginBottom: '8px'}}>
-                                  <span style={{fontSize: '12px', color: '#64748b', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Diagnosis</span>
-                                  <span style={{fontSize: '14px', color: '#0f172a'}}>{appt.diagnosis}</span>
-                                </div>
-                              )}
-                              {appt.notes && (
-                                <div>
-                                  <span style={{fontSize: '12px', color: '#64748b', fontWeight: 600, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Clinical Notes</span>
-                                  <div style={{fontSize: '14px', color: '#475569', whiteSpace: 'pre-wrap', background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '4px'}}>
-                                    {appt.notes}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          )}
                         </div>
                       ))
                     ) : (
                       <div className="pd-empty-state">
-                        <p>No appointments found. Start by recording your symptoms.</p>
+                        <p>{visitTab === 'past' ? 'No past visits recorded yet.' : 'No active appointments found. Start by recording your symptoms.'}</p>
                       </div>
                     )}
                 </div>
-                <button className="pd-btn-outline w-full mt-3">Manage All Appointments</button>
+                <button className="pd-btn-outline w-full mt-3" onClick={() => setManageMode(prev => !prev)}>
+                  {manageMode ? 'Done Managing' : 'Manage All Appointments'}
+                </button>
               </div>
 
 
@@ -395,34 +547,68 @@ const PatientDashboard = () => {
 
           {/* Sidebar */}
           <div className="pd-grid-side">
-            <div className="pd-section-top">
-              <h3 className="flex items-center gap-2"><Bell size={18} color="#3b82f6"/> Recent Alerts</h3>
-              <span className="pd-badge-new">4 NEW</span>
+            <div className="pd-notification-panel">
+            <div className="pd-section-top pd-notification-top">
+              <div>
+                <h3 className="flex items-center gap-2"><Bell size={18} color="#3b82f6"/> Notification Center</h3>
+                <p className="pd-notification-sub">Sorted by unread and clinical importance</p>
+              </div>
+              <span className="pd-badge-new">{notificationCounts.unread} NEW</span>
+            </div>
+
+            <div className="pd-notification-filters">
+              {[
+                ['all', 'All'],
+                ['unread', 'Unread'],
+                ['important', 'Important'],
+                ['schedule', 'Schedule']
+              ].map(([id, label]) => (
+                <button
+                  key={id}
+                  className={notificationFilter === id ? 'active' : ''}
+                  onClick={() => setNotificationFilter(id)}
+                >
+                  {label} <span>{notificationCounts[id]}</span>
+                </button>
+              ))}
             </div>
             
             <div className="pd-alerts">
-              {notifications.length > 0 ? notifications.map((notif) => {
+              {filteredNotifications.length > 0 ? filteredNotifications.map((notif) => {
                 const Icon = getAlertIcon(notif.title);
+                const priority = getNotificationPriority(notif);
                 return (
-                  <div key={notif.id} className={`pd-card pd-alert-card mb-3 ${notif.read ? 'read' : 'unread'}`}>
-                    <div className="pd-alert-icon">
+                  <div key={notif.id} className={`pd-card pd-alert-card mb-3 ${notif.read ? 'read' : 'unread'} priority-${priority}`}>
+                    <div className={`pd-alert-icon priority-${priority}`}>
                       <Icon size={18} color="#0f172a" />
                     </div>
                     <div className="pd-alert-content">
-                      <h4>{notif.title}</h4>
+                      <div className="pd-alert-title-row">
+                        <h4>{notif.title}</h4>
+                        <span className={`pd-alert-priority ${priority}`}>{priority}</span>
+                      </div>
                       <p>{notif.message}</p>
-                      <span className="pd-alert-time">{new Date(notif.created_at).toLocaleDateString()}</span>
+                      <div className="pd-alert-footer">
+                        <span className="pd-alert-time">{new Date(notif.created_at).toLocaleDateString()}</span>
+                        {!notif.read && (
+                          <button type="button" onClick={() => handleMarkNotificationRead(notif.id)}>Mark read</button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
               }) : (
                 <div className="pd-empty-state-side">
-                  <p>No recent alerts.</p>
+                  <p>No notifications match this filter.</p>
                 </div>
               )}
             </div>
             
-            <button className="pd-clear-alerts w-full mt-2">Clear All Notifications</button>
+            <div className="pd-notification-actions">
+              <button className="pd-clear-alerts" onClick={handleMarkAllRead}>Mark All Read</button>
+              <button className="pd-clear-alerts danger" onClick={handleClearNotifications}>Clear All</button>
+            </div>
+            </div>
           </div>
         </div>
       </main>
@@ -565,6 +751,78 @@ const PatientDashboard = () => {
                   ) : (
                     'Save Changes'
                   )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {editingAppointment && (
+        <div className="pd-profile-overlay" onClick={() => setEditingAppointment(null)}>
+          <div className="pd-appointment-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="pd-profile-modal-header">
+              <div>
+                <h3>Manage Appointment</h3>
+                <p>Edit symptoms, urgency, or request a different preferred time.</p>
+              </div>
+              <button
+                type="button"
+                className="pd-profile-close"
+                onClick={() => setEditingAppointment(null)}
+                aria-label="Close appointment editor"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form className="pd-profile-form" onSubmit={handleSaveAppointmentChanges}>
+              <label className="pd-profile-field">
+                <span><Activity size={14} /> Symptoms</span>
+                <textarea
+                  value={appointmentForm.symptoms}
+                  onChange={(e) => setAppointmentForm({ ...appointmentForm, symptoms: e.target.value })}
+                  placeholder="Separate symptoms with commas"
+                  rows={4}
+                  required
+                />
+              </label>
+
+              <label className="pd-profile-field">
+                <span><AlertCircle size={14} /> Severity</span>
+                <select
+                  value={appointmentForm.severity}
+                  onChange={(e) => setAppointmentForm({ ...appointmentForm, severity: e.target.value })}
+                >
+                  <option value="low">Stable</option>
+                  <option value="moderate">Urgent</option>
+                  <option value="severe">Critical</option>
+                </select>
+              </label>
+
+              <label className="pd-profile-field">
+                <span><Clock size={14} /> Preferred Date & Time</span>
+                <input
+                  type="datetime-local"
+                  value={appointmentForm.preferred_date}
+                  onChange={(e) => setAppointmentForm({ ...appointmentForm, preferred_date: e.target.value })}
+                />
+              </label>
+
+              <div className="pd-appointment-modal-note">
+                Reception will review schedule changes and confirm the final appointment time.
+              </div>
+
+              <div className="pd-profile-actions">
+                <button
+                  type="button"
+                  className="pd-profile-cancel"
+                  onClick={() => setEditingAppointment(null)}
+                >
+                  Close
+                </button>
+                <button type="submit" className="pd-profile-submit">
+                  Save Changes
                 </button>
               </div>
             </form>

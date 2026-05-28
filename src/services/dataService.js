@@ -1,4 +1,4 @@
-import apiClient, { API_HOST } from './apiClient';
+import apiClient from './apiClient';
 
 const STORAGE_KEYS = {
   TOKEN: 'careconnect_token',
@@ -190,6 +190,14 @@ export const appointmentService = {
   async updateStatus(id, status) {
     try {
       return await apiClient.patch(`/appointments/${id}`, { appointment: { status } });
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async updateAppointment(id, fields) {
+    try {
+      return await apiClient.patch(`/appointments/${id}`, { appointment: fields });
     } catch (error) {
       throw error;
     }

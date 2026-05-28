@@ -447,6 +447,87 @@
   color: #1e40af;
 }
 
+.lab-required-tests-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lab-test-worklist {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.lab-worklist-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.lab-test-result-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.9fr) minmax(150px, 0.8fr) minmax(180px, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.lab-test-result-row:last-child {
+  border-bottom: none;
+}
+
+.lab-test-result-row.checked {
+  background: #f0fdf4;
+}
+
+.lab-test-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #1e293b;
+  cursor: pointer;
+}
+
+.lab-test-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: #2563eb;
+}
+
+.lab-result-value,
+.lab-result-note {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #dbe3ea;
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 9px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.lab-result-value:focus,
+.lab-result-note:focus {
+  background: white;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.09);
+}
+
 .lab-results-input-group {
   display: flex;
   flex-direction: column;
@@ -477,6 +558,10 @@
   background: #f8fafc;
   transition: all 0.2s;
   box-sizing: border-box;
+}
+
+.lab-results-input-group textarea.lab-notes-textarea {
+  min-height: 82px;
 }
 
 .lab-results-input-group textarea:focus {
@@ -560,4 +645,22 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1100px) {
+  .lab-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lab-queue-card {
+    max-height: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .lab-stats-grid,
+  .lab-sheet-row,
+  .lab-test-result-row {
+    grid-template-columns: 1fr;
+  }
 }

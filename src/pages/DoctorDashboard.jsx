@@ -15,12 +15,33 @@ import {
   ClipboardList,
   Pill,
   CalendarCheck,
-  X
+  X,
+  Plus,
+  MinusCircle
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authService, appointmentService, labService } from '../services/dataService';
 
 import '../styles/DoctorDashboard.css';
+
+const LAB_TEST_GROUPS = [
+  {
+    category: 'Hematology',
+    tests: ['Full Blood Count', 'Hemoglobin', 'Blood Film', 'ESR', 'Malaria Parasite Test', 'Blood Grouping']
+  },
+  {
+    category: 'Chemistry',
+    tests: ['Random Blood Glucose', 'Fasting Blood Glucose', 'Liver Function Test', 'Kidney Function Test', 'Lipid Profile', 'Electrolytes']
+  },
+  {
+    category: 'Microbiology',
+    tests: ['Urinalysis', 'Stool Microscopy', 'Sputum AFB', 'Blood Culture', 'Wound Swab Culture', 'H. pylori Test']
+  },
+  {
+    category: 'Serology',
+    tests: ['HIV Test', 'Hepatitis B Surface Antigen', 'Syphilis Test', 'Pregnancy Test', 'C-Reactive Protein', 'Rheumatoid Factor']
+  }
+];
 
 const DoctorDashboard = () => {
 
@@ -32,6 +53,8 @@ const DoctorDashboard = () => {
   const [viewHistoryModal, setViewHistoryModal] = useState(null); // stores the history record to view
   const [showLabModal, setShowLabModal] = useState(false);
   const [labTests, setLabTests] = useState('');
+  const [selectedLabTests, setSelectedLabTests] = useState([]);
+  const [customLabTest, setCustomLabTest] = useState('');
   const [labLoading, setLabLoading] = useState(false);
   const [standbyQueue, setStandbyQueue] = useState([]);
   const [showStandbyPanel, setShowStandbyPanel] = useState(false);
@@ -90,16 +113,19 @@ const DoctorDashboard = () => {
 
   // Lab Test Request
   const handleRequestLab = async () => {
-    if (!selectedPatient || !labTests.trim()) {
+    const requestedTests = selectedLabTests.length > 0 ? selectedLabTests.join(', ') : labTests.trim();
+    if (!selectedPatient || !requestedTests) {
       toast.error('Please specify the lab tests to request.');
       return;
     }
     setLabLoading(true);
     try {
-      await labService.requestLabTests(selectedPatient.id, labTests);
+      await labService.requestLabTests(selectedPatient.id, requestedTests);
       toast.success('Patient sent to pathology laboratory.');
       setShowLabModal(false);
       setLabTests('');
+      setSelectedLabTests([]);
+      setCustomLabTest('');
       loadQueue();
       loadStandbyQueue();
     } catch (err) {
@@ -219,7 +245,34 @@ const DoctorDashboard = () => {
     return appointment?.lab_status === 'completed' || Boolean(appointment?.lab_results);
   };
 
+  const parseList = (value) => {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    return String(value).split(',').map(item => item.trim()).filter(Boolean);
+  };
+
+  const toggleLabTest = (test) => {
+    setSelectedLabTests(prev => (
+      prev.includes(test) ? prev.filter(item => item !== test) : [...prev, test]
+    ));
+  };
+
+  const addCustomLabTest = () => {
+    const test = customLabTest.trim();
+    if (!test) return;
+    setSelectedLabTests(prev => prev.includes(test) ? prev : [...prev, test]);
+    setCustomLabTest('');
+  };
+
+  const closeLabModal = () => {
+    setShowLabModal(false);
+    setLabTests('');
+    setSelectedLabTests([]);
+    setCustomLabTest('');
+  };
+
   const vitals = getPatientVitals(selectedPatient);
+  const selectedLabTestList = parseList(selectedPatient?.lab_tests);
 
   return (
     <div className="dashboard-page-content">
@@ -431,6 +484,33 @@ const DoctorDashboard = () => {
                                 )}
                             </div>
                         </div>
+
+                        {selectedPatient.lab_request_id && (
+                          <div className={`data-card lab-results-card ${hasCompletedLab(selectedPatient) ? 'complete' : 'pending'}`}>
+                            <div className="card-title-row">
+                              <FlaskConical size={17} /> Laboratory Results
+                              <span className={hasCompletedLab(selectedPatient) ? 'lab-complete-label inline' : 'lab-pending-label inline'}>
+                                {hasCompletedLab(selectedPatient) ? 'Completed' : 'Awaiting results'}
+                              </span>
+                            </div>
+                            {selectedLabTestList.length > 0 && (
+                              <div className="ordered-test-chip-row">
+                                {selectedLabTestList.map(test => (
+                                  <span key={test} className="ordered-test-chip">{test}</span>
+                                ))}
+                              </div>
+                            )}
+                            {hasCompletedLab(selectedPatient) ? (
+                              <div className="lab-results-report">
+                                {selectedPatient.lab_results}
+                              </div>
+                            ) : (
+                              <div className="lab-results-empty">
+                                Results will appear here when the laboratory technologist submits findings.
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
 
                       <div className="pillar-side">
@@ -608,38 +688,79 @@ const DoctorDashboard = () => {
 
       {/* Lab Test Request Modal */}
       {showLabModal && (
-        <div className="modal-overlay" style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'rgba(15, 23, 42, 0.4)', backdropFilter:'blur(4px)', zIndex:999, display:'flex', alignItems:'center', justifyContent:'center'}}>
-          <div className="modal-content" style={{background:'white', padding:'28px', borderRadius:'16px', width:'480px', boxShadow:'0 20px 60px rgba(0,0,0,0.15)', fontFamily:"'Inter', sans-serif"}}>
-            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px'}}>
-              <h3 style={{margin:0, fontSize:'18px', fontWeight:700, display:'flex', alignItems:'center', gap:'8px', color:'#0f172a'}}>
+        <div className="modal-overlay lab-order-overlay">
+          <div className="modal-content lab-order-modal">
+            <div className="lab-order-head">
+              <h3>
                 <FlaskConical size={20} color="#3b82f6" /> Request Lab Tests
               </h3>
-              <button onClick={() => setShowLabModal(false)} style={{background:'none', border:'none', cursor:'pointer'}}><X size={20} color="#64748b" /></button>
+              <button onClick={closeLabModal} className="lab-order-close" aria-label="Close lab request modal"><X size={20} /></button>
             </div>
-            <p style={{fontSize:'13px', color:'#64748b', marginBottom:'16px', lineHeight:'1.5'}}>
+            <p className="lab-order-copy">
               Requesting pathology lab tests for <strong>{selectedPatient?.patient?.name}</strong>. The patient will be moved to the standby queue and a lab technologist will process the request.
             </p>
-            <div style={{marginBottom:'16px'}}>
-              <label style={{display:'block', fontSize:'12px', fontWeight:700, color:'#475569', marginBottom:'6px', textTransform:'uppercase', letterSpacing:'0.05em'}}>Lab Tests Required *</label>
+
+            <div className="lab-test-picker-grid">
+              {LAB_TEST_GROUPS.map(group => (
+                <div key={group.category} className="lab-test-group">
+                  <div className="lab-test-group-title">{group.category}</div>
+                  <div className="lab-test-options">
+                    {group.tests.map(test => (
+                      <button
+                        key={test}
+                        type="button"
+                        className={`lab-test-option ${selectedLabTests.includes(test) ? 'selected' : ''}`}
+                        onClick={() => toggleLabTest(test)}
+                      >
+                        <CheckCircle size={13} />
+                        {test}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="lab-custom-row">
+              <input
+                value={customLabTest}
+                onChange={(e) => setCustomLabTest(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addCustomLabTest();
+                  }
+                }}
+                placeholder="Add another test"
+              />
+              <button type="button" onClick={addCustomLabTest}><Plus size={15} /> Add</button>
+            </div>
+
+            {selectedLabTests.length > 0 && (
+              <div className="selected-lab-strip">
+                <span className="selected-lab-strip-label">Selected</span>
+                {selectedLabTests.map(test => (
+                  <button key={test} type="button" onClick={() => toggleLabTest(test)}>
+                    {test} <MinusCircle size={12} />
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="manual-lab-entry">
+              <label>Free-text request</label>
               <textarea
                 value={labTests}
                 onChange={(e) => setLabTests(e.target.value)}
-                placeholder="e.g. Full blood count, Lipid panel, Kidney function test, Blood glucose..."
-                style={{width:'100%', minHeight:'100px', padding:'12px', border:'1.5px solid #e2e8f0', borderRadius:'10px', fontSize:'13px', fontFamily:'inherit', resize:'vertical', boxSizing:'border-box', outline:'none', background:'#f8fafc'}}
+                placeholder="Use this only for special instructions or tests not listed above."
               />
             </div>
-            <div style={{display:'flex', justifyContent:'flex-end', gap:'10px'}}>
-              <button onClick={() => setShowLabModal(false)} style={{padding:'10px 18px', borderRadius:'8px', border:'1px solid #e2e8f0', background:'white', fontSize:'13px', fontWeight:600, cursor:'pointer', color:'#475569'}}>Cancel</button>
+            <div className="lab-order-actions">
+              <button onClick={closeLabModal} className="lab-order-cancel">Cancel</button>
               <button 
                 onClick={handleRequestLab} 
                 disabled={labLoading}
-                style={{
-                  padding:'10px 18px', borderRadius:'8px', border:'none',
-                  background: labLoading ? '#94a3b8' : '#3b82f6', color:'white',
-                  fontSize:'13px', fontWeight:700, cursor: labLoading ? 'not-allowed' : 'pointer',
-                  display:'flex', alignItems:'center', gap:'6px',
-                  boxShadow:'0 4px 12px rgba(59, 130, 246, 0.2)'
-                }}
+                className="lab-order-submit"
               >
                 {labLoading ? 'Sending...' : 'Send to Lab'}
               </button>

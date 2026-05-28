@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
-  FlaskConical, FileText, Clock, CheckCircle, User, Search, Send, Loader2, X, Activity 
+  FlaskConical, FileText, Clock, CheckCircle, User, Search, Send, Loader2, X, Activity, ClipboardCheck
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authService, labService } from '../services/dataService';
@@ -12,6 +12,8 @@ const LabDashboard = () => {
   const [selectedLab, setSelectedLab] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [resultsText, setResultsText] = useState('');
+  const [testResults, setTestResults] = useState([]);
+  const [technicianNotes, setTechnicianNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [completedToday, setCompletedToday] = useState(0);
@@ -25,7 +27,11 @@ const LabDashboard = () => {
       setSelectedLab((current) => {
         if (!current) return current;
         const refreshed = data.find(l => l.id === current.id);
-        if (!refreshed) setResultsText('');
+        if (!refreshed) {
+          setResultsText('');
+          setTestResults([]);
+          setTechnicianNotes('');
+        }
         return refreshed || null;
       });
     } catch (err) {
@@ -49,16 +55,33 @@ const LabDashboard = () => {
   const handleSubmitResults = async (e) => {
     e.preventDefault();
     if (!selectedLab) return;
-    if (!resultsText.trim()) {
+    const completedRows = testResults.filter(row => row.done || row.result.trim() || row.notes.trim());
+    const hasStructuredResults = completedRows.some(row => row.result.trim() || row.notes.trim());
+    if (!resultsText.trim() && !hasStructuredResults && !technicianNotes.trim()) {
       toast.error('Please enter the laboratory findings/results.');
       return;
     }
 
+    const structuredReport = [
+      `Tests requested: ${selectedLab.tests}`,
+      completedRows.length > 0 ? '\nTest findings:' : '',
+      ...completedRows.map(row => {
+        const status = row.done ? 'Completed' : 'Reviewed';
+        const result = row.result.trim() || 'No numeric/value result entered';
+        const notes = row.notes.trim() ? ` Notes: ${row.notes.trim()}` : '';
+        return `- ${row.name}: ${status}. Result: ${result}.${notes}`;
+      }),
+      resultsText.trim() ? `\nSummary report:\n${resultsText.trim()}` : '',
+      technicianNotes.trim() ? `\nTechnician notes:\n${technicianNotes.trim()}` : ''
+    ].filter(Boolean).join('\n');
+
     setSubmitting(true);
     try {
-      await labService.submitLabResults(selectedLab.id, resultsText);
+      await labService.submitLabResults(selectedLab.id, structuredReport);
       toast.success(`Lab results for ${selectedLab.patient_name} submitted successfully!`);
       setResultsText('');
+      setTestResults([]);
+      setTechnicianNotes('');
       setSelectedLab(null);
       setCompletedToday(prev => prev + 1);
       loadData();
@@ -82,6 +105,29 @@ const LabDashboard = () => {
     if (!dateStr) return '—';
     const date = new Date(dateStr);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' (' + date.toLocaleDateString() + ')';
+  };
+
+  const parseTests = (tests) => {
+    if (!tests) return [];
+    return String(tests).split(',').map(test => test.trim()).filter(Boolean);
+  };
+
+  const selectLab = (lab) => {
+    setSelectedLab(lab);
+    setResultsText(lab.results || '');
+    setTechnicianNotes('');
+    setTestResults(parseTests(lab.tests).map(test => ({
+      name: test,
+      done: false,
+      result: '',
+      notes: ''
+    })));
+  };
+
+  const updateTestRow = (index, patch) => {
+    setTestResults(prev => prev.map((row, rowIndex) => (
+      rowIndex === index ? { ...row, ...patch } : row
+    )));
   };
 
   return (
@@ -169,10 +215,7 @@ const LabDashboard = () => {
                 <div 
                   key={lab.id} 
                   className={`lab-queue-item ${selectedLab?.id === lab.id ? 'active' : ''}`}
-                  onClick={() => {
-                    setSelectedLab(lab);
-                    setResultsText(lab.results || '');
-                  }}
+                  onClick={() => selectLab(lab)}
                 >
                   <div className="lab-item-header">
                     <div className="lab-patient-identity">
@@ -215,6 +258,8 @@ const LabDashboard = () => {
                   onClick={() => {
                     setSelectedLab(null);
                     setResultsText('');
+                    setTestResults([]);
+                    setTechnicianNotes('');
                   }}
                 >
                   <X size={16} />
@@ -244,20 +289,66 @@ const LabDashboard = () => {
                 </div>
                 <div className="lab-sheet-tests-box">
                   <span className="lab-sheet-label">Pathology Tests Required</span>
-                  <div className="lab-required-tests-bubble">{selectedLab.tests}</div>
+                  <div className="lab-required-tests-list">
+                    {parseTests(selectedLab.tests).map(test => (
+                      <span key={test} className="lab-required-tests-bubble">{test}</span>
+                    ))}
+                  </div>
                 </div>
+              </div>
+
+              <div className="lab-test-worklist">
+                <div className="lab-worklist-title">
+                  <ClipboardCheck size={15} /> Test processing checklist
+                </div>
+                {testResults.map((row, index) => (
+                  <div key={row.name} className={`lab-test-result-row ${row.done ? 'checked' : ''}`}>
+                    <label className="lab-test-check">
+                      <input
+                        type="checkbox"
+                        checked={row.done}
+                        onChange={e => updateTestRow(index, { done: e.target.checked })}
+                      />
+                      <span>{row.name}</span>
+                    </label>
+                    <input
+                      className="lab-result-value"
+                      value={row.result}
+                      onChange={e => updateTestRow(index, { result: e.target.value })}
+                      placeholder="Result/value"
+                    />
+                    <input
+                      className="lab-result-note"
+                      value={row.notes}
+                      onChange={e => updateTestRow(index, { notes: e.target.value })}
+                      placeholder="Reference range, flag, or note"
+                    />
+                  </div>
+                ))}
               </div>
 
               <div className="lab-results-input-group">
                 <label htmlFor="lab-results-textarea">
-                  <FileText size={14} /> Laboratory Findings & Report *
+                  <FileText size={14} /> Summary Findings & Report
                 </label>
                 <textarea
                   id="lab-results-textarea"
                   value={resultsText}
                   onChange={e => setResultsText(e.target.value)}
                   placeholder="Enter detailed test results, counts, parameters, and technician notes..."
-                  required
+                />
+              </div>
+
+              <div className="lab-results-input-group">
+                <label htmlFor="lab-notes-textarea">
+                  <FileText size={14} /> Technician Notes
+                </label>
+                <textarea
+                  id="lab-notes-textarea"
+                  className="lab-notes-textarea"
+                  value={technicianNotes}
+                  onChange={e => setTechnicianNotes(e.target.value)}
+                  placeholder="Specimen quality, collection issues, urgent comments, or doctor follow-up notes..."
                 />
               </div>
 
@@ -268,6 +359,8 @@ const LabDashboard = () => {
                   onClick={() => {
                     setSelectedLab(null);
                     setResultsText('');
+                    setTestResults([]);
+                    setTechnicianNotes('');
                   }}
                 >
                   Cancel
