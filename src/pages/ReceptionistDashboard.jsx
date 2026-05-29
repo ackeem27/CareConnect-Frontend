@@ -311,16 +311,17 @@ function SchedulePage() {
                     <td>{appt.scheduled_at ? new Date(appt.scheduled_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : appt.status === 'pending' ? 'Immediate' : '—'}</td>
                     <td><span className={`rd-doctor-tag ${appt.doctor_id ? '' : 'unassigned'}`}>{getDoctorName(appt)}</span></td>
                     <td>{getPriorityBadge(appt.priority_level, appt.priority_score)}</td>
-                    <td><span className={`rd-status-tag ${appt.status}`}>{appt.status === 'pending' ? 'Walk-In' : appt.status}</span></td>
+                    <td><span className={`rd-status-tag ${appt.approval_status === 'approved' ? 'approved' : appt.status}`}>{appt.approval_status === 'approved' ? 'Approved' : appt.status === 'pending' ? 'Walk-In' : appt.status}</span></td>
                     <td className="rd-actions-cell">
-                      {appt.status !== 'pending' && (
-                        <div className="rd-row-actions">
-                          <button className="rd-action-btn" onClick={() => setRescheduleData({id: appt.id, time: appt.scheduled_at})}>Reschedule</button>
-                          <button className="rd-action-btn danger" onClick={() => handleCancel(appt.id)}>Cancel</button>
-                          <button className="rd-icon-action" onClick={() => handleSwap(appt.id, 'up')} title="Move Up"><ChevronUp size={14} /></button>
-                          <button className="rd-icon-action" onClick={() => handleSwap(appt.id, 'down')} title="Move Down"><ChevronDown size={14} /></button>
-                        </div>
-                      )}
+                      <div className="rd-row-actions">
+                        {!appt.doctor_id && (
+                          <button className="rd-action-btn" onClick={() => handleApproveClick(appt.id)} style={{background: '#10b981', color: 'white', border: 'none'}}>Assign Doctor</button>
+                        )}
+                        <button className="rd-action-btn" onClick={() => setRescheduleData({id: appt.id, time: appt.scheduled_at})}>Reschedule</button>
+                        <button className="rd-action-btn danger" onClick={() => handleCancel(appt.id)}>Cancel</button>
+                        <button className="rd-icon-action" onClick={() => handleSwap(appt.id, 'up')} title="Move Up"><ChevronUp size={14} /></button>
+                        <button className="rd-icon-action" onClick={() => handleSwap(appt.id, 'down')} title="Move Down"><ChevronDown size={14} /></button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -330,9 +331,12 @@ function SchedulePage() {
                   <td>{appt.scheduled_at ? new Date(appt.scheduled_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '—'}</td>
                   <td><span className={`rd-doctor-tag ${appt.doctor_id ? '' : 'unassigned'}`}>{getDoctorName(appt)}</span></td>
                   <td>{getPriorityBadge(appt.priority_level, appt.priority_score)}</td>
-                  <td><span className={`rd-status-tag ${appt.status}`}>{appt.status}</span></td>
+                  <td><span className={`rd-status-tag ${appt.approval_status === 'approved' ? 'approved' : appt.status}`}>{appt.approval_status === 'approved' ? 'Approved' : appt.status}</span></td>
                   <td className="rd-actions-cell">
                     <div className="rd-row-actions">
+                      {!appt.doctor_id && (
+                        <button className="rd-action-btn" onClick={() => handleApproveClick(appt.id)} style={{background: '#10b981', color: 'white', border: 'none'}}>Assign Doctor</button>
+                      )}
                       <button className="rd-action-btn" onClick={() => setRescheduleData({id: appt.id, time: appt.scheduled_at})}>Reschedule</button>
                       <button className="rd-action-btn danger" onClick={() => handleCancel(appt.id)}>Cancel</button>
                       <button className="rd-icon-action" onClick={() => handleSwap(appt.id, 'up')} title="Move Up"><ChevronUp size={14} /></button>
