@@ -28,6 +28,13 @@ const UnifiedLogin = () => {
         localStorage.removeItem('cc_remember_email');
       }
 
+      // Check if email is verified. If not, redirect to email verification page.
+      if (!user.email_verified) {
+        toast.error('Email not verified. Redirecting to verification...');
+        navigate('/verify-email', { state: { email: user.email, role: user.role } });
+        return;
+      }
+
       toast.success('Login successful!');
 
       // Automatically route to the correct dashboard based on role

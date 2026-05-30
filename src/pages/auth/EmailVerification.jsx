@@ -97,9 +97,12 @@ const EmailVerification = ({ email: propEmail, role: propRole, onVerified }) => 
               <Mail size={32} color="#3b82f6" />
             </div>
             <h1 style={{ fontSize: '24px', fontWeight: '700', color: '#1e293b', marginBottom: '8px' }}>Verify Your Email</h1>
-            <p style={{ color: '#64748b', fontSize: '15px' }}>
+            <p style={{ color: '#64748b', fontSize: '15px', marginBottom: '8px' }}>
               We've sent a 6-digit verification code to<br />
               <strong style={{ color: '#1e293b' }}>{email}</strong>
+            </p>
+            <p style={{ color: '#10b981', fontSize: '12px', background: '#ecfdf5', padding: '6px 12px', borderRadius: '6px', display: 'inline-block', border: '1px solid #a7f3d0' }}>
+              <strong>Demo Bypass:</strong> You can enter <strong>123456</strong> if the email doesn't arrive.
             </p>
           </div>
 
